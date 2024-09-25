@@ -27,33 +27,6 @@ class _HomeState extends State<Home> {
   List<List<String>> weeks = [];
   int today = DateTime.now().day;
   int foundScorllIndex = 0;
-  Widget listExpenseTracker = Container(
-    margin: const EdgeInsets.only(top: 20),
-    padding: const EdgeInsets.all(10),
-    decoration: BoxDecoration(
-      borderRadius: const BorderRadius.all(Radius.circular(5)),
-      border: Border.all(
-        color: Colors.black,
-      ),
-    ),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            Container(
-              child: const Icon(
-                money_outlined,
-                size: 38,
-              ),
-            ),
-            const Text('용돈'),
-          ],
-        ),
-        const Text('+ 50,000 원'),
-      ],
-    ),
-  );
 
   // functions start
   List<String> setDate(List<Map<int, String>> dayOfTheWeek) {
@@ -104,8 +77,6 @@ class _HomeState extends State<Home> {
   void getDate() {
     DateTime now = DateTime.now();
 
-    DateTime firstDayOfMonth = DateTime(now.year, now.month, 1);
-
     DateTime lastDayOfMonth = DateTime(now.year, now.month + 1, 0);
 
     int daysInMonth = lastDayOfMonth.day;
@@ -116,8 +87,6 @@ class _HomeState extends State<Home> {
     }
 
     List<String> weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
-    int firstWeekday = firstDayOfMonth.weekday;
 
     List<Map<int, String>> result = [];
 
@@ -143,6 +112,36 @@ class _HomeState extends State<Home> {
     return foundIndex;
   }
 
+  Widget getListExpenseTracker(context) {
+    return Container(
+      margin: EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.02),
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(Radius.circular(5)),
+        border: Border.all(
+          color: Colors.black,
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Container(
+                child: const Icon(
+                  money_outlined,
+                  size: 23,
+                ),
+              ),
+              const Text('용돈'),
+            ],
+          ),
+          const Text('+ 50,000 원'),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -160,21 +159,21 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(30),
+                    padding: const EdgeInsets.all(10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
                           child: const Icon(
                             space_dashboard_outlined,
-                            size: 38,
+                            size: 23,
                           ),
                         ),
                         const Text('9월'),
                         Container(
                           child: const Icon(
                             cancel_outlined,
-                            size: 38,
+                            size: 23,
                           ),
                         ),
                       ],
@@ -208,7 +207,7 @@ class _HomeState extends State<Home> {
                           ],
                         ),
                         SizedBox(
-                          height: 100,
+                          height: MediaQuery.of(context).size.height * 0.06,
                           child: PageView.builder(
                             controller: PageController(
                               initialPage: foundScorllIndex,
@@ -238,7 +237,10 @@ class _HomeState extends State<Home> {
                                             color: day == today.toString()
                                                 ? Colors.redAccent
                                                 : Colors.black,
-                                            fontSize: 50,
+                                            fontSize: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.078,
                                           ),
                                         ),
                                       ),
@@ -272,15 +274,17 @@ class _HomeState extends State<Home> {
                           child: const Text(
                             '오늘',
                             style: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.w600,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w800,
                             ),
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(8),
                           child: Container(
-                            padding: const EdgeInsets.all(10),
+                            padding: EdgeInsets.all(
+                              MediaQuery.of(context).size.width * 0.01,
+                            ),
                             decoration: BoxDecoration(
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(5)),
@@ -293,7 +297,7 @@ class _HomeState extends State<Home> {
                                 const Text(
                                   '\$',
                                   style: TextStyle(
-                                    fontSize: 20,
+                                    fontSize: 15,
                                     fontWeight: FontWeight.w400,
                                   ),
                                 ),
@@ -304,7 +308,7 @@ class _HomeState extends State<Home> {
                                 const Text(
                                   '38,000',
                                   style: TextStyle(
-                                    fontSize: 20,
+                                    fontSize: 15,
                                     fontWeight: FontWeight.w400,
                                   ),
                                 ),
@@ -347,7 +351,7 @@ class _HomeState extends State<Home> {
                                   Container(
                                     child: const Icon(
                                       money_outlined,
-                                      size: 38,
+                                      size: 23,
                                     ),
                                   ),
                                   const Text('용돈'),
@@ -357,7 +361,8 @@ class _HomeState extends State<Home> {
                             ],
                           ),
                         ),
-                        for (int i = 0; i < 5; i++) listExpenseTracker,
+                        for (int i = 0; i < 5; i++)
+                          getListExpenseTracker(context),
                       ],
                     ),
                   ),
@@ -365,6 +370,7 @@ class _HomeState extends State<Home> {
               ),
             ],
           ),
+          // Add or Minus record button of expense_tracker
           Positioned(
             left: MediaQuery.of(context).size.width * 0.75,
             top: MediaQuery.of(context).size.height * 0.9,
@@ -378,7 +384,15 @@ class _HomeState extends State<Home> {
                     shape: BoxShape.circle,
                     color: Colors.red,
                   ),
-                  child: const Text('+'),
+                  child: const Text(
+                    '+',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.015,
                 ),
                 Container(
                   width: MediaQuery.of(context).size.width * 0.1,
@@ -388,7 +402,12 @@ class _HomeState extends State<Home> {
                     shape: BoxShape.circle,
                     color: Colors.red,
                   ),
-                  child: const Text('-'),
+                  child: const Text(
+                    '-',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 )
               ],
             ),
