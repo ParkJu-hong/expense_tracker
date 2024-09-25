@@ -1,0 +1,109 @@
+Flutter crash report.
+Please report a bug at https://github.com/flutter/flutter/issues.
+
+## command
+
+flutter run --machine --start-paused -d chrome --devtools-server-address http://127.0.0.1:9100/ --target /Users/bagjuhong/Desktop/expense_tracker/lib/main.dart
+
+## exception
+
+StateError: Bad state: No running isolate (inspector is not set).
+
+```
+#0      ChromeProxyService.inspector (package:dwds/src/services/chrome_proxy_service.dart:78:7)
+#1      _waitForResumeEventToRunMain.<anonymous closure> (package:dwds/src/dwds_vm_client.dart:308:30)
+#2      _rootRunUnary (dart:async/zone.dart:1415:13)
+#3      _CustomZone.runUnary (dart:async/zone.dart:1308:19)
+#4      _CustomZone.runUnaryGuarded (dart:async/zone.dart:1217:7)
+#5      _BufferingStreamSubscription._sendData (dart:async/stream_impl.dart:365:11)
+#6      _DelayedData.perform (dart:async/stream_impl.dart:541:14)
+#7      _PendingEvents.handleNext (dart:async/stream_impl.dart:646:11)
+#8      _PendingEvents.schedule.<anonymous closure> (dart:async/stream_impl.dart:617:7)
+#9      StackZoneSpecification._run (package:stack_trace/src/stack_zone_specification.dart:207:15)
+#10     StackZoneSpecification._registerCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:114:48)
+#11     _rootRun (dart:async/zone.dart:1391:47)
+#12     _CustomZone.run (dart:async/zone.dart:1301:19)
+#13     _CustomZone.runGuarded (dart:async/zone.dart:1209:7)
+#14     _CustomZone.bindCallbackGuarded.<anonymous closure> (dart:async/zone.dart:1249:23)
+#15     StackZoneSpecification._run (package:stack_trace/src/stack_zone_specification.dart:207:15)
+#16     StackZoneSpecification._registerCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:114:48)
+#17     _rootRun (dart:async/zone.dart:1399:13)
+#18     _CustomZone.run (dart:async/zone.dart:1301:19)
+#19     _CustomZone.runGuarded (dart:async/zone.dart:1209:7)
+#20     _CustomZone.bindCallbackGuarded.<anonymous closure> (dart:async/zone.dart:1249:23)
+#21     _microtaskLoop (dart:async/schedule_microtask.dart:40:21)
+#22     _startMicrotaskLoop (dart:async/schedule_microtask.dart:49:5)
+#23     _runPendingImmediateCallback (dart:isolate-patch/isolate_patch.dart:118:13)
+#24     _RawReceivePort._handleMessage (dart:isolate-patch/isolate_patch.dart:185:5)
+```
+
+## flutter doctor
+
+```
+[✓] Flutter (Channel stable, 3.24.3, on macOS 14.5 23F79 darwin-x64, locale ko-US)
+    • Flutter version 3.24.3 on channel stable at /usr/local/Caskroom/flutter/3.24.3/flutter
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision 2663184aa7 (13 days ago), 2024-09-11 16:27:48 -0500
+    • Engine revision 36335019a8
+    • Dart version 3.5.3
+    • DevTools version 2.37.3
+
+[!] Android toolchain - develop for Android devices (Android SDK version 32.0.0)
+    • Android SDK at /Users/bagjuhong/Library/Android/sdk
+    ✗ cmdline-tools component is missing
+      Run `path/to/sdkmanager --install "cmdline-tools;latest"`
+      See https://developer.android.com/studio/command-line for more details.
+    ✗ Android license status unknown.
+      Run `flutter doctor --android-licenses` to accept the SDK licenses.
+      See https://flutter.dev/to/macos-android-setup for more details.
+
+[!] Xcode - develop for iOS and macOS (Xcode 13.2.1)
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Build 13C100
+    ✗ Flutter requires Xcode 14 or higher.
+      Download the latest version or update via the Mac App Store.
+    ! CocoaPods 1.10.2 out of date (1.13.0 is recommended).
+        CocoaPods is a package manager for iOS or macOS platform code.
+        Without CocoaPods, plugins will not work on iOS or macOS.
+        For more info, see https://flutter.dev/to/platform-plugins
+      To update CocoaPods, see https://guides.cocoapods.org/using/getting-started.html#updating-cocoapods
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Android Studio (version 2023.3)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 17.0.10+0-17.0.10b1087.21-11572160)
+
+[✓] IntelliJ IDEA Ultimate Edition (version 2023.2.2)
+    • IntelliJ at /Applications/IntelliJ IDEA.app
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+
+[✓] VS Code (version 1.55.2)
+    • VS Code at /Users/bagjuhong/Desktop/이전데스크탑/Visual Studio Code.app/Contents
+    • Flutter extension version 3.96.0
+
+[✓] VS Code (version 1.88.1)
+    • VS Code at /Users/bagjuhong/Downloads/Visual Studio Code.app/Contents
+    • Flutter extension version 3.96.0
+
+[✓] VS Code (version 1.93.1)
+    • VS Code at /Users/bagjuhong/Downloads/Visual Studio Code 2.app/Contents
+    • Flutter extension version 3.96.0
+
+[✓] Connected device (2 available)
+    • macOS (desktop) • macos  • darwin-x64     • macOS 14.5 23F79 darwin-x64
+    • Chrome (web)    • chrome • web-javascript • Google Chrome 129.0.6668.70
+
+[✓] Network resources
+    • All expected network resources are available.
+
+! Doctor found issues in 2 categories.
+```
