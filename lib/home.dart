@@ -213,9 +213,6 @@ class _HomeState extends State<Home> {
                                       MediaQuery.of(context).size.width * 0.09,
                                 ),
                               ),
-                              // SizedBox(
-                              //   width: MediaQuery.of(context).size.width * 0.01,
-                              // ),
                               IconButton(
                                 onPressed: () => {
                                   Navigator.push(
@@ -297,7 +294,7 @@ class _HomeState extends State<Home> {
                                             fontSize: MediaQuery.of(context)
                                                     .size
                                                     .width *
-                                                0.078,
+                                                0.070,
                                           ),
                                         ),
                                       ),
