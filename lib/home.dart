@@ -1,5 +1,7 @@
+import 'package:expense_tracker/calender.dart';
 import 'package:flutter/material.dart';
 import 'package:expense_tracker/dashboard.dart';
+import 'package:expense_tracker/search.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -23,6 +25,7 @@ class _HomeState extends State<Home> {
       IconData(0xf1e0, fontFamily: 'MaterialIcons');
   static const IconData calendar_month =
       IconData(0xf06bb, fontFamily: 'MaterialIcons');
+  static const IconData search = IconData(0xe567, fontFamily: 'MaterialIcons');
   List<Map<int, String>> dayOfTheWeek = [];
   List<String> currentWeek = [];
   List<List<String>> weeks = [];
@@ -164,28 +167,71 @@ class _HomeState extends State<Home> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        IconButton(
-                            onPressed: () => {
+                        Expanded(
+                          child: IconButton(
+                              onPressed: () => {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const Dashboard()),
+                                    )
+                                  },
+                              icon: Icon(
+                                space_dashboard_outlined,
+                                size: MediaQuery.of(context).size.width * 0.09,
+                              )),
+                        ),
+                        Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                '9월',
+                                style: TextStyle(
+                                    fontSize:
+                                        MediaQuery.of(context).size.width *
+                                            0.05),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Row(
+                            children: [
+                              IconButton(
+                                onPressed: () => {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            const Dashboard()),
+                                        builder: (context) => const Search()),
                                   )
                                 },
-                            icon: Icon(
-                              space_dashboard_outlined,
-                              size: MediaQuery.of(context).size.width * 0.09,
-                            )),
-                        Text(
-                          '9월',
-                          style: TextStyle(
-                              fontSize:
-                                  MediaQuery.of(context).size.width * 0.05),
-                        ),
-                        Icon(
-                          calendar_month,
-                          size: MediaQuery.of(context).size.width * 0.09,
+                                icon: Icon(
+                                  search,
+                                  size:
+                                      MediaQuery.of(context).size.width * 0.09,
+                                ),
+                              ),
+                              // SizedBox(
+                              //   width: MediaQuery.of(context).size.width * 0.01,
+                              // ),
+                              IconButton(
+                                onPressed: () => {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const Calender()),
+                                  )
+                                },
+                                icon: Icon(
+                                  calendar_month,
+                                  size:
+                                      MediaQuery.of(context).size.width * 0.09,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
