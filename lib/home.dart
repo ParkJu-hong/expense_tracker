@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:expense_tracker/dashboard.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -18,11 +19,11 @@ class _HomeState extends State<Home> {
   // Initialize variables
   static const IconData space_dashboard_outlined =
       IconData(0xf3bd, fontFamily: 'MaterialIcons');
-  static const IconData cancel_outlined =
-      IconData(0xef28, fontFamily: 'MaterialIcons');
-  List<Map<int, String>> dayOfTheWeek = [];
   static const IconData money_outlined =
       IconData(0xf1e0, fontFamily: 'MaterialIcons');
+  static const IconData calendar_month =
+      IconData(0xf06bb, fontFamily: 'MaterialIcons');
+  List<Map<int, String>> dayOfTheWeek = [];
   List<String> currentWeek = [];
   List<List<String>> weeks = [];
   int today = DateTime.now().day;
@@ -163,18 +164,28 @@ class _HomeState extends State<Home> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Container(
-                          child: const Icon(
-                            space_dashboard_outlined,
-                            size: 23,
-                          ),
+                        IconButton(
+                            onPressed: () => {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const Dashboard()),
+                                  )
+                                },
+                            icon: Icon(
+                              space_dashboard_outlined,
+                              size: MediaQuery.of(context).size.width * 0.09,
+                            )),
+                        Text(
+                          '9월',
+                          style: TextStyle(
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.05),
                         ),
-                        const Text('9월'),
-                        Container(
-                          child: const Icon(
-                            cancel_outlined,
-                            size: 23,
-                          ),
+                        Icon(
+                          calendar_month,
+                          size: MediaQuery.of(context).size.width * 0.09,
                         ),
                       ],
                     ),
@@ -207,7 +218,7 @@ class _HomeState extends State<Home> {
                           ],
                         ),
                         SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.06,
+                          height: MediaQuery.of(context).size.height * 0.1,
                           child: PageView.builder(
                             controller: PageController(
                               initialPage: foundScorllIndex,

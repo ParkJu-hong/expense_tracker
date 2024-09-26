@@ -1,0 +1,34 @@
+Target dependency graph (11 targets)
+FlutterMacOS in Pods, no dependencies
+app_links-app_links_macos_privacy in Pods, no dependencies
+app_links in Pods, depends on:
+FlutterMacOS in Pods (explicit)
+app_links-app_links_macos_privacy in Pods (explicit)
+path_provider_foundation-path_provider_foundation_privacy in Pods, no dependencies
+path_provider_foundation in Pods, depends on:
+FlutterMacOS in Pods (explicit)
+path_provider_foundation-path_provider_foundation_privacy in Pods (explicit)
+shared_preferences_foundation-shared_preferences_foundation_privacy in Pods, no dependencies
+shared_preferences_foundation in Pods, depends on:
+FlutterMacOS in Pods (explicit)
+shared_preferences_foundation-shared_preferences_foundation_privacy in Pods (explicit)
+url_launcher_macos in Pods, depends on:
+FlutterMacOS in Pods (explicit)
+Flutter Assemble in Runner, depends on:
+app_links in Pods (implicit dependency via options '-framework app_links' in build setting 'OTHER_LDFLAGS')
+path_provider_foundation in Pods (implicit dependency via options '-framework path_provider_foundation' in build setting 'OTHER_LDFLAGS')
+shared_preferences_foundation in Pods (implicit dependency via options '-framework shared_preferences_foundation' in build setting 'OTHER_LDFLAGS')
+url_launcher_macos in Pods (implicit dependency via options '-framework url_launcher_macos' in build setting 'OTHER_LDFLAGS')
+Pods-Runner in Pods, depends on:
+FlutterMacOS in Pods (explicit)
+app_links in Pods (explicit)
+path_provider_foundation in Pods (explicit)
+shared_preferences_foundation in Pods (explicit)
+url_launcher_macos in Pods (explicit)
+Runner in Runner, depends on:
+Flutter Assemble in Runner (explicit)
+Pods-Runner in Pods (implicit dependency via file 'Pods_Runner.framework' in build phase 'Link Binary')
+app_links in Pods (implicit dependency via options '-framework app_links' in build setting 'OTHER_LDFLAGS')
+path_provider_foundation in Pods (implicit dependency via options '-framework path_provider_foundation' in build setting 'OTHER_LDFLAGS')
+shared_preferences_foundation in Pods (implicit dependency via options '-framework shared_preferences_foundation' in build setting 'OTHER_LDFLAGS')
+url_launcher_macos in Pods (implicit dependency via options '-framework url_launcher_macos' in build setting 'OTHER_LDFLAGS')
