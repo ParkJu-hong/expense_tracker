@@ -21,17 +21,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  /* 
-  Device info starts
-  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-
-  print(deviceInfo.webBrowserInfo.then(
-    (value) {
-      print(value.data);
-    },
-  ));
-  Device info ends 
-  */
 
   await Supabase.initialize(
     // 나중에 environ 처리 해줄 것
@@ -84,11 +73,8 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
           // primarySwatch: Colors.blue,
           ),
-      home: Scaffold(
-        appBar: AppBar(title: const Text('UUID Example')),
-        body: Center(
-          child: Text('Unique ID: $_uniqueId'),
-        ),
+      home: const Scaffold(
+        body: Home(),
       ),
     );
   }

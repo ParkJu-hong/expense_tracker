@@ -18,6 +18,9 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: MediaQuery.of(context).size.height * 0.01,
+      ),
       body: SizedBox(
         height: MediaQuery.of(context).size.height,
         child: Column(

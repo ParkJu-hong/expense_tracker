@@ -27,6 +27,9 @@ class _SearchState extends State<Search> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: MediaQuery.of(context).size.height * 0.01,
+      ),
       body: SizedBox(
         height: MediaQuery.of(context).size.height,
         child: Column(
@@ -62,7 +65,7 @@ class _SearchState extends State<Search> {
             ),
             // search bar
             Container(
-              height: MediaQuery.of(context).size.height * 0.3,
+              height: MediaQuery.of(context).size.height * 0.2,
               decoration: BoxDecoration(
                 border: Border.all(
                   color: Colors.black,

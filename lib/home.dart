@@ -20,7 +20,6 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState(); // super.initState()를 첫 번째 줄에 위치시킴
     getDate();
-    // getDeviceInfo();
     foundScorllIndex = foundIndex(DateTime.now().day);
   }
 
@@ -39,14 +38,6 @@ class _HomeState extends State<Home> {
   int foundScorllIndex = 0;
 
   // functions start
-
-  /*
-  Future<void> getDeviceInfo() async {
-    BaseDeviceInfo webBrowserInfo = await deviceInfo.deviceInfo;
-    print('test');
-    print(webBrowserInfo.data);
-  }
-  */
 
   List<String> setDate(List<Map<int, String>> dayOfTheWeek) {
     List<String> weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -133,6 +124,7 @@ class _HomeState extends State<Home> {
 
   Widget getListExpenseTracker(context) {
     return Container(
+      height: MediaQuery.of(context).size.height * 0.09,
       margin: EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.02),
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -164,6 +156,9 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: MediaQuery.of(context).size.height * 0.01,
+      ),
       body: Stack(
         children: [
           Column(
@@ -254,6 +249,7 @@ class _HomeState extends State<Home> {
               Flexible(
                 flex: 1,
                 child: Container(
+                  height: MediaQuery.of(context).size.height * 0.15,
                   decoration: BoxDecoration(
                     border: Border.all(
                       color: Colors.black,
@@ -349,8 +345,9 @@ class _HomeState extends State<Home> {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(10),
                           child: Container(
+                            height: MediaQuery.of(context).size.height * 0.09,
                             padding: EdgeInsets.all(
                               MediaQuery.of(context).size.width * 0.01,
                             ),
@@ -363,10 +360,12 @@ class _HomeState extends State<Home> {
                             ),
                             child: Row(
                               children: [
-                                const Text(
+                                Text(
                                   '\$',
                                   style: TextStyle(
-                                    fontSize: 15,
+                                    fontSize:
+                                        MediaQuery.of(context).size.width *
+                                            0.07,
                                     fontWeight: FontWeight.w400,
                                   ),
                                 ),
@@ -374,10 +373,12 @@ class _HomeState extends State<Home> {
                                   width:
                                       MediaQuery.of(context).size.width * 0.02,
                                 ),
-                                const Text(
+                                Text(
                                   '38,000',
                                   style: TextStyle(
-                                    fontSize: 15,
+                                    fontSize:
+                                        MediaQuery.of(context).size.width *
+                                            0.07,
                                     fontWeight: FontWeight.w400,
                                   ),
                                 ),
@@ -404,6 +405,7 @@ class _HomeState extends State<Home> {
                     child: ListView(
                       children: [
                         Container(
+                          height: MediaQuery.of(context).size.height * 0.09,
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
                             borderRadius:
@@ -441,8 +443,8 @@ class _HomeState extends State<Home> {
           ),
           // Add or Minus record button of expense_tracker
           Positioned(
-            left: MediaQuery.of(context).size.width * 0.75,
-            top: MediaQuery.of(context).size.height * 0.9,
+            left: MediaQuery.of(context).size.width * 0.65,
+            top: MediaQuery.of(context).size.height * 0.8,
             child: Row(
               children: [
                 OutlinedButton(
