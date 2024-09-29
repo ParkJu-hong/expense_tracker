@@ -1,13 +1,9 @@
-import 'package:expense_tracker/adddata.dart';
 import 'package:expense_tracker/home.dart';
-import 'package:expense_tracker/minusdata.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:expense_tracker/loginpage.dart';
-import 'package:expense_tracker/adddata.dart';
 
 /*
-  1. Create Add, Minus widget
+  (done) 1. Create Add, Minus widget
     1) create add categorys 
     2) layout widget
     3) 
@@ -36,9 +32,8 @@ class MyApp extends StatelessWidget {
       title: 'Expense Tracker',
       theme: ThemeData(
           // primarySwatch: Colors.blue,
-
           ),
-      home: const MinusData(),
+      home: const Home(),
     );
   }
 }

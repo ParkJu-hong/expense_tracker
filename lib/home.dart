@@ -1,4 +1,6 @@
+import 'package:expense_tracker/adddata.dart';
 import 'package:expense_tracker/calender.dart';
+import 'package:expense_tracker/minusdata.dart';
 import 'package:flutter/material.dart';
 import 'package:expense_tracker/dashboard.dart';
 import 'package:expense_tracker/search.dart';
@@ -430,39 +432,58 @@ class _HomeState extends State<Home> {
             top: MediaQuery.of(context).size.height * 0.9,
             child: Row(
               children: [
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.1,
-                  height: MediaQuery.of(context).size.width * 0.1,
-                  alignment: Alignment.center,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.red,
-                  ),
-                  child: const Text(
-                    '+',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
+                OutlinedButton(
+                  onPressed: () => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const AddData()),
                     ),
-                  ),
+                  },
+                  child: const Text('+'),
                 ),
+                // Container(
+                //   width: MediaQuery.of(context).size.width * 0.1,
+                //   height: MediaQuery.of(context).size.width * 0.1,
+                //   alignment: Alignment.center,
+                //   decoration: const BoxDecoration(
+                //     shape: BoxShape.circle,
+                //     color: Colors.red,
+                //   ),
+                //   child: const Text(
+                //     '+',
+                //     style: TextStyle(
+                //       fontWeight: FontWeight.w600,
+                //     ),
+                //   ),
+                // ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.015,
                 ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.1,
-                  height: MediaQuery.of(context).size.width * 0.1,
-                  alignment: Alignment.center,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.red,
-                  ),
-                  child: const Text(
-                    '-',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
+                OutlinedButton(
+                  onPressed: () => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const MinusData()),
                     ),
-                  ),
-                )
+                  },
+                  child: const Text('-'),
+                ),
+                // Container(
+                //   width: MediaQuery.of(context).size.width * 0.1,
+                //   height: MediaQuery.of(context).size.width * 0.1,
+                //   alignment: Alignment.center,
+                //   decoration: const BoxDecoration(
+                //     shape: BoxShape.circle,
+                //     color: Colors.red,
+                //   ),
+                //   child: const Text(
+                //     '-',
+                //     style: TextStyle(
+                //       fontWeight: FontWeight.w600,
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),

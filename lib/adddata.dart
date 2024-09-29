@@ -145,14 +145,14 @@ class _AddDataState extends State<AddData> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 OutlinedButton(
-                    onPressed: () => {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const Home()),
-                          ),
-                        },
-                    child: const Text('완료'))
+                  onPressed: () => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const Home()),
+                    ),
+                  },
+                  child: const Text('완료'),
+                ),
               ],
             ),
           )
