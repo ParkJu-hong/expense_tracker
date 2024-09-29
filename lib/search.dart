@@ -11,7 +11,6 @@ class _SearchState extends State<Search> {
   // Initialize variables
   static const IconData cancel_outlined =
       IconData(0xef28, fontFamily: 'MaterialIcons');
-  static const IconData search = IconData(0xe567, fontFamily: 'MaterialIcons');
 
   // functions starts
   Widget getListSearched(context) => Container(

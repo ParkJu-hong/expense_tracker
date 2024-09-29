@@ -4,6 +4,7 @@ import 'package:expense_tracker/minusdata.dart';
 import 'package:flutter/material.dart';
 import 'package:expense_tracker/dashboard.dart';
 import 'package:expense_tracker/search.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -13,11 +14,14 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+
   @override
   void initState() {
+    super.initState(); // super.initState()를 첫 번째 줄에 위치시킴
     getDate();
+    // getDeviceInfo();
     foundScorllIndex = foundIndex(DateTime.now().day);
-    super.initState();
   }
 
   // Initialize variables
@@ -35,6 +39,15 @@ class _HomeState extends State<Home> {
   int foundScorllIndex = 0;
 
   // functions start
+
+  /*
+  Future<void> getDeviceInfo() async {
+    BaseDeviceInfo webBrowserInfo = await deviceInfo.deviceInfo;
+    print('test');
+    print(webBrowserInfo.data);
+  }
+  */
+
   List<String> setDate(List<Map<int, String>> dayOfTheWeek) {
     List<String> weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -433,6 +446,10 @@ class _HomeState extends State<Home> {
             child: Row(
               children: [
                 OutlinedButton(
+                  style: ButtonStyle(
+                    backgroundColor:
+                        WidgetStateProperty.all<Color>(Colors.white),
+                  ),
                   onPressed: () => {
                     Navigator.push(
                       context,
@@ -441,25 +458,14 @@ class _HomeState extends State<Home> {
                   },
                   child: const Text('+'),
                 ),
-                // Container(
-                //   width: MediaQuery.of(context).size.width * 0.1,
-                //   height: MediaQuery.of(context).size.width * 0.1,
-                //   alignment: Alignment.center,
-                //   decoration: const BoxDecoration(
-                //     shape: BoxShape.circle,
-                //     color: Colors.red,
-                //   ),
-                //   child: const Text(
-                //     '+',
-                //     style: TextStyle(
-                //       fontWeight: FontWeight.w600,
-                //     ),
-                //   ),
-                // ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.015,
                 ),
                 OutlinedButton(
+                  style: ButtonStyle(
+                    backgroundColor:
+                        WidgetStateProperty.all<Color>(Colors.white),
+                  ),
                   onPressed: () => {
                     Navigator.push(
                       context,
@@ -469,21 +475,6 @@ class _HomeState extends State<Home> {
                   },
                   child: const Text('-'),
                 ),
-                // Container(
-                //   width: MediaQuery.of(context).size.width * 0.1,
-                //   height: MediaQuery.of(context).size.width * 0.1,
-                //   alignment: Alignment.center,
-                //   decoration: const BoxDecoration(
-                //     shape: BoxShape.circle,
-                //     color: Colors.red,
-                //   ),
-                //   child: const Text(
-                //     '-',
-                //     style: TextStyle(
-                //       fontWeight: FontWeight.w600,
-                //     ),
-                //   ),
-                // ),
               ],
             ),
           ),

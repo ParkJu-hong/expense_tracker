@@ -9,12 +9,12 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   // Initialize variables
-  static const IconData settings =
-      IconData(0xe57f, fontFamily: 'MaterialIcons');
+  // static const IconData settings =
+  //     IconData(0xe57f, fontFamily: 'MaterialIcons');
   static const IconData cancel_outlined =
       IconData(0xef28, fontFamily: 'MaterialIcons');
-  static const IconData arrow_right =
-      IconData(0xe09e, fontFamily: 'MaterialIcons', matchTextDirection: true);
+  // static const IconData arrow_right =
+  //     IconData(0xe09e, fontFamily: 'MaterialIcons', matchTextDirection: true);
   @override
   Widget build(BuildContext context) {
     return Scaffold(

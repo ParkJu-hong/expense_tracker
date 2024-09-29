@@ -1,7 +1,7 @@
 import 'package:expense_tracker/home.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:uuid/uuid.dart';
+// import 'package:uuid/uuid.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /*
