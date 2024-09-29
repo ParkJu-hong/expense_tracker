@@ -86,6 +86,12 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "fixnum",
+      "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/fixnum-1.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
+    },
+    {
       "name": "flutter",
       "rootUri": "file:///usr/local/Caskroom/flutter/3.24.3/flutter/packages/flutter",
       "packageUri": "lib/",
@@ -141,9 +147,15 @@
     },
     {
       "name": "intl",
-      "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/intl-0.17.0",
+      "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/intl-0.19.0",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "js",
+      "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/js-0.6.7",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
     },
     {
       "name": "jwt_decode",
@@ -198,6 +210,12 @@
       "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/mime-1.0.6",
       "packageUri": "lib/",
       "languageVersion": "3.2"
+    },
+    {
+      "name": "nested",
+      "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/nested-1.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
     },
     {
       "name": "path",
@@ -260,6 +278,12 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "provider",
+      "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/provider-6.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "realtime_client",
       "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/realtime_client-2.2.1",
       "packageUri": "lib/",
@@ -320,6 +344,24 @@
       "languageVersion": "3.3"
     },
     {
+      "name": "sign_in_with_apple",
+      "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/sign_in_with_apple-4.3.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "sign_in_with_apple_platform_interface",
+      "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/sign_in_with_apple_platform_interface-1.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "sign_in_with_apple_web",
+      "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/sign_in_with_apple_web-1.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "simple_gesture_detector",
       "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/simple_gesture_detector-0.2.1",
       "packageUri": "lib/",
@@ -336,6 +378,12 @@
       "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/source_span-1.10.0",
       "packageUri": "lib/",
       "languageVersion": "2.18"
+    },
+    {
+      "name": "sprintf",
+      "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/sprintf-7.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
     },
     {
       "name": "stack_trace",
@@ -375,9 +423,9 @@
     },
     {
       "name": "table_calendar",
-      "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/table_calendar-3.0.8",
+      "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/table_calendar-3.1.2",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "3.0"
     },
     {
       "name": "term_glyph",
@@ -446,6 +494,12 @@
       "languageVersion": "3.2"
     },
     {
+      "name": "uuid",
+      "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/uuid-4.5.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "vector_math",
       "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/vector_math-2.1.4",
       "packageUri": "lib/",
@@ -494,7 +548,7 @@
       "languageVersion": "3.5"
     }
   ],
-  "generated": "2024-09-26T07:36:12.853597Z",
+  "generated": "2024-09-28T06:49:31.177515Z",
   "generator": "pub",
   "generatorVersion": "3.5.3",
   "flutterRoot": "file:///usr/local/Caskroom/flutter/3.24.3/flutter",

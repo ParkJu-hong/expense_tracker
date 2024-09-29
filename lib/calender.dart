@@ -73,16 +73,24 @@ class _CalenderState extends State<Calender> {
                   _focusedDay = focusedDay;
                 });
               },
-              calendarStyle: const CalendarStyle(
-                todayDecoration: BoxDecoration(
+              calendarStyle: CalendarStyle(
+                selectedTextStyle: TextStyle(
+                  fontSize: MediaQuery.of(context).size.height * 0.03,
+                  color: Colors.white,
+                ),
+                todayTextStyle: TextStyle(
+                  fontSize: MediaQuery.of(context).size.height * 0.03,
+                  color: Colors.white,
+                ),
+                todayDecoration: const BoxDecoration(
                   color: Colors.blue,
                   shape: BoxShape.circle,
                 ),
-                selectedDecoration: BoxDecoration(
+                selectedDecoration: const BoxDecoration(
                   color: Colors.redAccent,
                   shape: BoxShape.circle,
                 ),
-                defaultDecoration: BoxDecoration(
+                defaultDecoration: const BoxDecoration(
                   shape: BoxShape.circle,
                 ),
               ),
