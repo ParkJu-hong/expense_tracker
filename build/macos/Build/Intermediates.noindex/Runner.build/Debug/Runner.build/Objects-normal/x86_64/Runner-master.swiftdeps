@@ -1,8 +1,0 @@
-version: "Apple Swift version 5.5.2 (swiftlang-1300.0.47.5 clang-1300.0.29.30)"
-options: "c4dfddf03511dd2ad3594563f40db9ba58ab950ec70a68e67e005e4bf7b0b81f"
-build_start_time: [1727256017, 689777851]
-build_end_time: [1727256018, 739944934]
-inputs:
-  "/Users/bagjuhong/Desktop/expense_tracker/macos/Flutter/GeneratedPluginRegistrant.swift": [1727256001, 127899646]
-  "/Users/bagjuhong/Desktop/expense_tracker/macos/Runner/AppDelegate.swift": [1726161479, 0]
-  "/Users/bagjuhong/Desktop/expense_tracker/macos/Runner/MainFlutterWindow.swift": [1726161479, 0]

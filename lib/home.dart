@@ -4,7 +4,7 @@ import 'package:expense_tracker/minusdata.dart';
 import 'package:flutter/material.dart';
 import 'package:expense_tracker/dashboard.dart';
 import 'package:expense_tracker/search.dart';
-import 'package:device_info_plus/device_info_plus.dart';
+// import 'package:device_info_plus/device_info_plus.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -14,7 +14,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+  // DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
 
   @override
   void initState() {

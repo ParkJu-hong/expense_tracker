@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
 
@@ -8,15 +10,18 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  // Initialize variables
-  // static const IconData settings =
-  //     IconData(0xe57f, fontFamily: 'MaterialIcons');
   static const IconData cancel_outlined =
       IconData(0xef28, fontFamily: 'MaterialIcons');
-  // static const IconData arrow_right =
-  //     IconData(0xe09e, fontFamily: 'MaterialIcons', matchTextDirection: true);
+
+  final storage = const FlutterSecureStorage();
+
+  Future<void> test() async {
+    print(await storage.readAll());
+  }
+
   @override
   Widget build(BuildContext context) {
+    test();
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: MediaQuery.of(context).size.height * 0.01,
