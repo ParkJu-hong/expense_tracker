@@ -4,10 +4,14 @@ import 'package:expense_tracker/addcategory.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'dart:convert';
 
 class AddData extends StatefulWidget {
-  const AddData({super.key});
+  const AddData({
+    super.key,
+    this.selectedDateTime,
+  });
+
+  final String? selectedDateTime;
 
   @override
   State<AddData> createState() => _AddDataState();
@@ -18,6 +22,9 @@ class _AddDataState extends State<AddData> {
   final TextEditingController _controller = TextEditingController();
   int selectedIconIndex = 0;
   int iconIndex = 4;
+  String? categoryInput;
+  String? infoInput;
+  int? amountInput;
 
   // functions starts
   String formatNumber(String s) {
@@ -50,46 +57,31 @@ class _AddDataState extends State<AddData> {
 
   Future<void> insertDailyRecord() async {
     DateTime now = DateTime.now();
-    String dateString = now.toIso8601String(); // ISO 8601 형식의 문자열로 변환
-    // Map<String, dynamic> jsonData = {
-    //   'current_time': dateString,
-    // };
-    // String jsonString = jsonEncode(jsonData);
+    String dateString = now.toIso8601String();
     final supabase = Supabase.instance.client;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? storedId = prefs.getString('uuid');
     await supabase.from('daily_record').insert({
       'user_uuid': storedId.toString(),
-      'date': dateString,
-      'category': 'testCategory',
-      'info': 'testInfo',
-      'amount': 10000
+      'date': widget.selectedDateTime.toString(),
+      'category': categoryInput,
+      'info': infoInput,
+      'amount': amountInput
     }).then((value) {
-      print(value);
+      print('Insert success $value');
     }).catchError((error) {
-      print('error test');
       print(error);
     });
   }
-
-  /*
-      id serial primary key,
-  user_uuid text not null references user_data(device_uuid),
-  date date not null,
-  category text not null,
-  info text,
-  amount int not null,
-  created_at timestamp not null default now()
-  */
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back), // 왼쪽 방향 화살표 아이콘
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context); // 이전 화면으로 돌아가기
+            Navigator.pop(context);
           },
         ),
         toolbarHeight: MediaQuery.of(context).size.height * 0.08,
@@ -99,6 +91,9 @@ class _AddDataState extends State<AddData> {
           Padding(
             padding: const EdgeInsets.all(10),
             child: TextField(
+              onChanged: (value) {
+                amountInput = int.parse(value.replaceAll(',', ''));
+              },
               textAlign: TextAlign.right,
               controller: _controller,
               keyboardType: TextInputType.number,
@@ -123,10 +118,11 @@ class _AddDataState extends State<AddData> {
                               : Colors.black,
                           backgroundColor: Colors.white,
                         ),
-                        onPressed: () => {
+                        onPressed: () {
                           setState(() {
                             selectedIconIndex = i;
-                          })
+                            categoryInput = _addCategory[i].keys.first;
+                          });
                         },
                         child: Column(
                           children: [
@@ -168,10 +164,13 @@ class _AddDataState extends State<AddData> {
               ],
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.all(10),
+          Padding(
+            padding: const EdgeInsets.all(10),
             child: TextField(
-              decoration: InputDecoration(
+              onChanged: (value) {
+                infoInput = value;
+              },
+              decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: '내역',
               ),

@@ -2,9 +2,16 @@ import 'package:expense_tracker/home.dart';
 import 'package:flutter/material.dart';
 import 'package:expense_tracker/minuscategory.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MinusData extends StatefulWidget {
-  const MinusData({super.key});
+  const MinusData({
+    super.key,
+    this.selectedDateTime,
+  });
+
+  final String? selectedDateTime;
 
   @override
   State<MinusData> createState() => _MinusDataState();
@@ -15,6 +22,9 @@ class _MinusDataState extends State<MinusData> {
   final TextEditingController _controller = TextEditingController();
   int selectedIconIndex = 0;
   int iconIndex = 4;
+  String? categoryInput;
+  String? infoInput;
+  int? amountInput;
 
   String formatNumber(String s) {
     if (s.isEmpty) return '';
@@ -44,6 +54,30 @@ class _MinusDataState extends State<MinusData> {
     });
   }
 
+  Future<void> insertDailyRecord() async {
+    DateTime now = DateTime.now();
+    String dateString = now.toIso8601String();
+    final supabase = Supabase.instance.client;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? storedId = prefs.getString('uuid');
+
+    // 하나라도 insert에 필요한 value들이 null이라면 그전에
+    // 유효성검사를 구현해야함
+    int insertAmount = -(amountInput ?? 0);
+
+    await supabase.from('daily_record').insert({
+      'user_uuid': storedId.toString(),
+      'date': widget.selectedDateTime.toString(),
+      'category': categoryInput,
+      'info': infoInput,
+      'amount': insertAmount,
+    }).then((value) {
+      print('Insert success $value');
+    }).catchError((error) {
+      print(error);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,6 +95,9 @@ class _MinusDataState extends State<MinusData> {
           Padding(
             padding: const EdgeInsets.all(10),
             child: TextField(
+              onChanged: (value) {
+                amountInput = int.parse(value.replaceAll(',', ''));
+              },
               textAlign: TextAlign.right,
               controller: _controller,
               keyboardType: TextInputType.number,
@@ -85,10 +122,11 @@ class _MinusDataState extends State<MinusData> {
                               : Colors.black,
                           backgroundColor: Colors.white,
                         ),
-                        onPressed: () => {
+                        onPressed: () {
                           setState(() {
                             selectedIconIndex = i;
-                          })
+                            categoryInput = minusCategory[i].keys.first;
+                          });
                         },
                         child: Column(
                           children: [
@@ -102,10 +140,13 @@ class _MinusDataState extends State<MinusData> {
               ],
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.all(10),
+          Padding(
+            padding: const EdgeInsets.all(10),
             child: TextField(
-              decoration: InputDecoration(
+              onChanged: (value) {
+                infoInput = value;
+              },
+              decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: '내역',
               ),
@@ -117,13 +158,13 @@ class _MinusDataState extends State<MinusData> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 OutlinedButton(
-                    onPressed: () => {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const Home()),
-                          ),
-                        },
+                    onPressed: () async {
+                      await insertDailyRecord();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const Home()),
+                      );
+                    },
                     child: const Text('완료'))
               ],
             ),

@@ -60,12 +60,10 @@ class _HomeState extends State<Home> {
     List<String> firstWeek = [];
     int startIndex = weekDays.indexOf(firstDayOfMonth);
 
-    // Fill the first week with empty strings for the days before the first day of the month
     for (int i = 0; i < startIndex; i++) {
       firstWeek.add('');
     }
 
-    // Add the days of the month in 'yyyy-MM-dd' format for the first week
     for (int i = 0; i < 7 - startIndex; i++) {
       String dateString =
           '$year-${month.toString().padLeft(2, '0')}-${(i + 1).toString().padLeft(2, '0')}';
@@ -73,7 +71,6 @@ class _HomeState extends State<Home> {
     }
     weeks.add(firstWeek);
 
-    // Process the remaining weeks
     for (int i = 7 - startIndex; i < dayOfTheWeek.length; i += 7) {
       List<String> week = [];
       for (int j = i; j < i + 7 && j < dayOfTheWeek.length; j++) {
@@ -82,7 +79,6 @@ class _HomeState extends State<Home> {
         week.add(dateString);
       }
 
-      // Fill the week with empty strings if less than 7 days
       if (week.length < 7) {
         for (int k = week.length; k < 7; k++) {
           week.add('');
@@ -156,9 +152,7 @@ class _HomeState extends State<Home> {
             final dailyRecords = item['daily_record'] as List?;
             if (dailyRecords != null) {
               for (var record in dailyRecords) {
-                // amount가 null일 경우 0으로 대체하여 더함
-                totalAmountResult +=
-                    (record['amount'] ?? 0) as int; // num을 int로 캐스팅
+                totalAmountResult += (record['amount'] ?? 0) as int;
               }
             }
           }
@@ -215,7 +209,6 @@ class _HomeState extends State<Home> {
       foundScorllIndex = foundIndex(DateTime.now().day);
 
       setState(() {
-        // 이곳에서 필요한 모든 상태 업데이트를 한 번에 처리
         dailyRecords = result2[0]['daily_record'];
         totalAmount = result1;
       });
@@ -226,11 +219,10 @@ class _HomeState extends State<Home> {
 
   String extractDay(String day) {
     if (day.isNotEmpty) {
-      // 날짜 문자열이 비어 있지 않으면
-      String extractedDay = day.split('-')[2]; // '2024-10-01'에서 '01' 부분을 추출
-      return extractedDay.replaceFirst(RegExp(r'^0+'), ''); // 선행 0 제거
+      String extractedDay = day.split('-')[2];
+      return extractedDay.replaceFirst(RegExp(r'^0+'), '');
     }
-    return ''; // day가 빈 문자열일 경우 빈 문자열 반환
+    return '';
   }
 
   // widget functions
@@ -415,11 +407,6 @@ class _HomeState extends State<Home> {
                                         selectedDateTime = day;
                                         getDailyRecords(selectedDateTime);
                                         getTotalAmountOfAday(selectedDateTime);
-                                        // 여기에서 Datetime selectedDateTime update?
-                                        // 그러기위해선 weeks가 날짜만 가지고 있는게 아니고,
-                                        // 현재 DateTime을 가지고 있어야된다?
-                                        // ** 혹은 선택한 날짜에 년도-월-일 데이터가 다 있어서
-                                        // selectedDateTime에 바로 넣어주면 좋을텐데
                                       });
                                     },
                                     child: Expanded(
@@ -537,36 +524,8 @@ class _HomeState extends State<Home> {
                     padding: const EdgeInsets.all(20),
                     child: ListView(
                       children: [
-                        Container(
-                          height: MediaQuery.of(context).size.height * 0.09,
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(5)),
-                            border: Border.all(
-                              color: Colors.black,
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    child: const Icon(
-                                      money_outlined,
-                                      size: 23,
-                                    ),
-                                  ),
-                                  const Text('용돈'),
-                                ],
-                              ),
-                              const Text('+ 50,000 원'),
-                            ],
-                          ),
-                        ),
-                        for (int i = 0; i < dailyRecords.length; i++)
-                          getListExpenseTracker(context, dailyRecords[i]),
+                        ...dailyRecords.map(
+                            (record) => getListExpenseTracker(context, record)),
                       ],
                     ),
                   ),
@@ -588,7 +547,9 @@ class _HomeState extends State<Home> {
                   onPressed: () => {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const AddData()),
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              AddData(selectedDateTime: selectedDateTime)),
                     ),
                   },
                   child: const Text('+'),
@@ -605,7 +566,8 @@ class _HomeState extends State<Home> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const MinusData()),
+                          builder: (context) =>
+                              MinusData(selectedDateTime: selectedDateTime)),
                     ),
                   },
                   child: const Text('-'),
