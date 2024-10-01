@@ -1,0 +1,48 @@
+{
+  "" : {
+    "diagnostics" : "/Users/bagjuhong/Desktop/expense_tracker/build/macos/Build/Intermediates.noindex/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/sign_in_with_apple-master.dia",
+    "emit-module-dependencies" : "/Users/bagjuhong/Desktop/expense_tracker/build/macos/Build/Intermediates.noindex/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/sign_in_with_apple-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/bagjuhong/Desktop/expense_tracker/build/macos/Build/Intermediates.noindex/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/sign_in_with_apple-master-emit-module.dia",
+    "swift-dependencies" : "/Users/bagjuhong/Desktop/expense_tracker/build/macos/Build/Intermediates.noindex/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/sign_in_with_apple-master.swiftdeps"
+  },
+  "/Users/bagjuhong/.pub-cache/hosted/pub.dev/sign_in_with_apple-4.3.0/macos/Classes/SignInWithAppleAvailablePlugin.swift" : {
+    "const-values" : "/Users/bagjuhong/Desktop/expense_tracker/build/macos/Build/Intermediates.noindex/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/SignInWithAppleAvailablePlugin.swiftconstvalues",
+    "dependencies" : "/Users/bagjuhong/Desktop/expense_tracker/build/macos/Build/Intermediates.noindex/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/SignInWithAppleAvailablePlugin.d",
+    "diagnostics" : "/Users/bagjuhong/Desktop/expense_tracker/build/macos/Build/Intermediates.noindex/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/SignInWithAppleAvailablePlugin.dia",
+    "index-unit-output-path" : "/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/SignInWithAppleAvailablePlugin.o",
+    "llvm-bc" : "/Users/bagjuhong/Desktop/expense_tracker/build/macos/Build/Intermediates.noindex/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/SignInWithAppleAvailablePlugin.bc",
+    "object" : "/Users/bagjuhong/Desktop/expense_tracker/build/macos/Build/Intermediates.noindex/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/SignInWithAppleAvailablePlugin.o",
+    "swift-dependencies" : "/Users/bagjuhong/Desktop/expense_tracker/build/macos/Build/Intermediates.noindex/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/SignInWithAppleAvailablePlugin.swiftdeps",
+    "swiftmodule" : "/Users/bagjuhong/Desktop/expense_tracker/build/macos/Build/Intermediates.noindex/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/SignInWithAppleAvailablePlugin~partial.swiftmodule"
+  },
+  "/Users/bagjuhong/.pub-cache/hosted/pub.dev/sign_in_with_apple-4.3.0/macos/Classes/SignInWithAppleError.swift" : {
+    "const-values" : "/Users/bagjuhong/Desktop/expense_tracker/build/macos/Build/Intermediates.noindex/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/SignInWithAppleError.swiftconstvalues",
+    "dependencies" : "/Users/bagjuhong/Desktop/expense_tracker/build/macos/Build/Intermediates.noindex/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/SignInWithAppleError.d",
+    "diagnostics" : "/Users/bagjuhong/Desktop/expense_tracker/build/macos/Build/Intermediates.noindex/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/SignInWithAppleError.dia",
+    "index-unit-output-path" : "/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/SignInWithAppleError.o",
+    "llvm-bc" : "/Users/bagjuhong/Desktop/expense_tracker/build/macos/Build/Intermediates.noindex/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/SignInWithAppleError.bc",
+    "object" : "/Users/bagjuhong/Desktop/expense_tracker/build/macos/Build/Intermediates.noindex/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/SignInWithAppleError.o",
+    "swift-dependencies" : "/Users/bagjuhong/Desktop/expense_tracker/build/macos/Build/Intermediates.noindex/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/SignInWithAppleError.swiftdeps",
+    "swiftmodule" : "/Users/bagjuhong/Desktop/expense_tracker/build/macos/Build/Intermediates.noindex/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/SignInWithAppleError~partial.swiftmodule"
+  },
+  "/Users/bagjuhong/.pub-cache/hosted/pub.dev/sign_in_with_apple-4.3.0/macos/Classes/SignInWithApplePlugin.swift" : {
+    "const-values" : "/Users/bagjuhong/Desktop/expense_tracker/build/macos/Build/Intermediates.noindex/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/SignInWithApplePlugin.swiftconstvalues",
+    "dependencies" : "/Users/bagjuhong/Desktop/expense_tracker/build/macos/Build/Intermediates.noindex/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/SignInWithApplePlugin.d",
+    "diagnostics" : "/Users/bagjuhong/Desktop/expense_tracker/build/macos/Build/Intermediates.noindex/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/SignInWithApplePlugin.dia",
+    "index-unit-output-path" : "/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/SignInWithApplePlugin.o",
+    "llvm-bc" : "/Users/bagjuhong/Desktop/expense_tracker/build/macos/Build/Intermediates.noindex/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/SignInWithApplePlugin.bc",
+    "object" : "/Users/bagjuhong/Desktop/expense_tracker/build/macos/Build/Intermediates.noindex/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/SignInWithApplePlugin.o",
+    "swift-dependencies" : "/Users/bagjuhong/Desktop/expense_tracker/build/macos/Build/Intermediates.noindex/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/SignInWithApplePlugin.swiftdeps",
+    "swiftmodule" : "/Users/bagjuhong/Desktop/expense_tracker/build/macos/Build/Intermediates.noindex/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/SignInWithApplePlugin~partial.swiftmodule"
+  },
+  "/Users/bagjuhong/.pub-cache/hosted/pub.dev/sign_in_with_apple-4.3.0/macos/Classes/SignInWithAppleUnavailablePlugin.swift" : {
+    "const-values" : "/Users/bagjuhong/Desktop/expense_tracker/build/macos/Build/Intermediates.noindex/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/SignInWithAppleUnavailablePlugin.swiftconstvalues",
+    "dependencies" : "/Users/bagjuhong/Desktop/expense_tracker/build/macos/Build/Intermediates.noindex/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/SignInWithAppleUnavailablePlugin.d",
+    "diagnostics" : "/Users/bagjuhong/Desktop/expense_tracker/build/macos/Build/Intermediates.noindex/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/SignInWithAppleUnavailablePlugin.dia",
+    "index-unit-output-path" : "/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/SignInWithAppleUnavailablePlugin.o",
+    "llvm-bc" : "/Users/bagjuhong/Desktop/expense_tracker/build/macos/Build/Intermediates.noindex/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/SignInWithAppleUnavailablePlugin.bc",
+    "object" : "/Users/bagjuhong/Desktop/expense_tracker/build/macos/Build/Intermediates.noindex/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/SignInWithAppleUnavailablePlugin.o",
+    "swift-dependencies" : "/Users/bagjuhong/Desktop/expense_tracker/build/macos/Build/Intermediates.noindex/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/SignInWithAppleUnavailablePlugin.swiftdeps",
+    "swiftmodule" : "/Users/bagjuhong/Desktop/expense_tracker/build/macos/Build/Intermediates.noindex/Pods.build/Debug/sign_in_with_apple.build/Objects-normal/x86_64/SignInWithAppleUnavailablePlugin~partial.swiftmodule"
+  }
+}

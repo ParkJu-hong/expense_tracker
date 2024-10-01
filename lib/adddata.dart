@@ -2,6 +2,9 @@ import 'package:expense_tracker/home.dart';
 import 'package:flutter/material.dart';
 import 'package:expense_tracker/addcategory.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'dart:convert';
 
 class AddData extends StatefulWidget {
   const AddData({super.key});
@@ -16,6 +19,7 @@ class _AddDataState extends State<AddData> {
   int selectedIconIndex = 0;
   int iconIndex = 4;
 
+  // functions starts
   String formatNumber(String s) {
     if (s.isEmpty) return '';
     final number = int.parse(s);
@@ -43,6 +47,40 @@ class _AddDataState extends State<AddData> {
       );
     });
   }
+
+  Future<void> insertDailyRecord() async {
+    DateTime now = DateTime.now();
+    String dateString = now.toIso8601String(); // ISO 8601 형식의 문자열로 변환
+    // Map<String, dynamic> jsonData = {
+    //   'current_time': dateString,
+    // };
+    // String jsonString = jsonEncode(jsonData);
+    final supabase = Supabase.instance.client;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? storedId = prefs.getString('uuid');
+    await supabase.from('daily_record').insert({
+      'user_uuid': storedId.toString(),
+      'date': dateString,
+      'category': 'testCategory',
+      'info': 'testInfo',
+      'amount': 10000
+    }).then((value) {
+      print(value);
+    }).catchError((error) {
+      print('error test');
+      print(error);
+    });
+  }
+
+  /*
+      id serial primary key,
+  user_uuid text not null references user_data(device_uuid),
+  date date not null,
+  category text not null,
+  info text,
+  amount int not null,
+  created_at timestamp not null default now()
+  */
 
   @override
   Widget build(BuildContext context) {
@@ -145,11 +183,12 @@ class _AddDataState extends State<AddData> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 OutlinedButton(
-                  onPressed: () => {
+                  onPressed: () async {
+                    await insertDailyRecord();
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => const Home()),
-                    ),
+                    );
                   },
                   child: const Text('완료'),
                 ),
