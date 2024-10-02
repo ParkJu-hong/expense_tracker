@@ -1,7 +1,9 @@
+import 'package:expense_tracker/datestate.dart';
 import 'package:expense_tracker/home.dart';
 import 'package:flutter/material.dart';
-import 'package:expense_tracker/addcategory.dart';
+import 'package:expense_tracker/datacategorys.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -42,6 +44,7 @@ class _AddDataState extends State<AddData> {
 
   @override
   void initState() {
+    categoryInput = _addCategory[0].keys.first;
     super.initState();
 
     _controller.addListener(() {
@@ -55,15 +58,16 @@ class _AddDataState extends State<AddData> {
     });
   }
 
-  Future<void> insertDailyRecord() async {
+  Future<void> insertDailyRecord(String selectedDateTime) async {
     DateTime now = DateTime.now();
     String dateString = now.toIso8601String();
     final supabase = Supabase.instance.client;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? storedId = prefs.getString('uuid');
+    print('categoryInput : $categoryInput');
     await supabase.from('daily_record').insert({
       'user_uuid': storedId.toString(),
-      'date': widget.selectedDateTime.toString(),
+      'date': selectedDateTime, //widget.selectedDateTime.toString(),
       'category': categoryInput,
       'info': infoInput,
       'amount': amountInput
@@ -76,6 +80,7 @@ class _AddDataState extends State<AddData> {
 
   @override
   Widget build(BuildContext context) {
+    final datestate = Provider.of<Datestate>(context, listen: true);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -110,7 +115,7 @@ class _AddDataState extends State<AddData> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    for (int i = 0; i <= 3; i++)
+                    for (int i = 0; i < _addCategory.length; i++)
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           foregroundColor: selectedIconIndex == i
@@ -123,34 +128,6 @@ class _AddDataState extends State<AddData> {
                             selectedIconIndex = i;
                             categoryInput = _addCategory[i].keys.first;
                           });
-                        },
-                        child: Column(
-                          children: [
-                            Icon(_addCategory[i].values.first),
-                            Text(_addCategory[i].keys.first),
-                          ],
-                        ),
-                      ),
-                  ],
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.03,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    for (int i = 4; i <= 7; i++)
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: selectedIconIndex == i
-                              ? Colors.amber
-                              : Colors.black,
-                          backgroundColor: Colors.white,
-                        ),
-                        onPressed: () => {
-                          setState(() {
-                            selectedIconIndex = i;
-                          })
                         },
                         child: Column(
                           children: [
@@ -183,7 +160,7 @@ class _AddDataState extends State<AddData> {
               children: [
                 OutlinedButton(
                   onPressed: () async {
-                    await insertDailyRecord();
+                    await insertDailyRecord(datestate.selectedDateTime);
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => const Home()),

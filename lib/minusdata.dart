@@ -1,9 +1,11 @@
 import 'package:expense_tracker/home.dart';
 import 'package:flutter/material.dart';
-import 'package:expense_tracker/minuscategory.dart';
+import 'package:expense_tracker/datacategorys.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:expense_tracker/datestate.dart';
 
 class MinusData extends StatefulWidget {
   const MinusData({
@@ -41,6 +43,7 @@ class _MinusDataState extends State<MinusData> {
 
   @override
   void initState() {
+    categoryInput = minusCategory[0].keys.first;
     super.initState();
 
     _controller.addListener(() {
@@ -54,7 +57,7 @@ class _MinusDataState extends State<MinusData> {
     });
   }
 
-  Future<void> insertDailyRecord() async {
+  Future<void> insertDailyRecord(String selectedDateTime) async {
     DateTime now = DateTime.now();
     String dateString = now.toIso8601String();
     final supabase = Supabase.instance.client;
@@ -67,7 +70,7 @@ class _MinusDataState extends State<MinusData> {
 
     await supabase.from('daily_record').insert({
       'user_uuid': storedId.toString(),
-      'date': widget.selectedDateTime.toString(),
+      'date': selectedDateTime, // widget.selectedDateTime.toString(),
       'category': categoryInput,
       'info': infoInput,
       'amount': insertAmount,
@@ -80,6 +83,7 @@ class _MinusDataState extends State<MinusData> {
 
   @override
   Widget build(BuildContext context) {
+    final datestate = Provider.of<Datestate>(context, listen: true);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -114,7 +118,7 @@ class _MinusDataState extends State<MinusData> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    for (int i = 0; i <= 2; i++)
+                    for (int i = 0; i <= 3; i++)
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           foregroundColor: selectedIconIndex == i
@@ -127,6 +131,35 @@ class _MinusDataState extends State<MinusData> {
                             selectedIconIndex = i;
                             categoryInput = minusCategory[i].keys.first;
                           });
+                        },
+                        child: Column(
+                          children: [
+                            Icon(minusCategory[i].values.first),
+                            Text(minusCategory[i].keys.first),
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.03,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    for (int i = 4; i <= 7; i++)
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: selectedIconIndex == i
+                              ? Colors.amber
+                              : Colors.black,
+                          backgroundColor: Colors.white,
+                        ),
+                        onPressed: () => {
+                          setState(() {
+                            selectedIconIndex = i;
+                            categoryInput = minusCategory[i].keys.first;
+                          })
                         },
                         child: Column(
                           children: [
@@ -159,7 +192,7 @@ class _MinusDataState extends State<MinusData> {
               children: [
                 OutlinedButton(
                     onPressed: () async {
-                      await insertDailyRecord();
+                      await insertDailyRecord(datestate.selectedDateTime);
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => const Home()),

@@ -18,8 +18,8 @@ class _CalenderState extends State<Calender> {
   DateTime? _selectedDay;
 
   final ScrollController _scrollController = ScrollController();
-  double _calendarHeight = 350;
-  final double _maxCalendarHeight = 350;
+  double _calendarHeight = 550;
+  final double _maxCalendarHeight = 550;
   final double _minCalendarHeight = 0;
 
   // functions starts
@@ -61,6 +61,8 @@ class _CalenderState extends State<Calender> {
           SizedBox(
             height: _calendarHeight,
             child: TableCalendar(
+              daysOfWeekHeight: 20,
+              rowHeight: 80,
               firstDay: DateTime.utc(2020, 1, 1),
               lastDay: DateTime.utc(2030, 12, 31),
               focusedDay: _focusedDay,
@@ -74,6 +76,7 @@ class _CalenderState extends State<Calender> {
                 });
               },
               calendarStyle: CalendarStyle(
+                defaultTextStyle: const TextStyle(),
                 selectedTextStyle: TextStyle(
                   fontSize: MediaQuery.of(context).size.height * 0.03,
                   color: Colors.white,

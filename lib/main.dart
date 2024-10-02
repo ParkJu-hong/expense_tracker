@@ -4,6 +4,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:provider/provider.dart';
+import 'package:expense_tracker/datestate.dart'; // Datestate 클래스 임포트
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,7 +17,14 @@ Future<void> main() async {
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndmbGZ5bXRnZXBibmJ2cnVzY2NxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY5MDY4NjYsImV4cCI6MjA0MjQ4Mjg2Nn0.91_7B2fQ2RUz-1DZNal4B57SodAjbpr75kXBHhoPu2Q', // Supabase Anon Key
   );
 
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => Datestate()), // 상태 제공
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {

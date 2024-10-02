@@ -7,6 +7,9 @@ import 'package:expense_tracker/search.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:expense_tracker/datestate.dart';
+import 'package:expense_tracker/datacategorys.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -19,7 +22,12 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    initializeData();
+    // initState 내에서 Provider 값에 안전하게 접근하는 방법
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final dateState = Provider.of<Datestate>(context, listen: false);
+      // dateState를 사용하여 초기화 작업 수행
+      initializeData(dateState.selectedDateTime);
+    });
   }
 
   // Initialize variables
@@ -33,7 +41,7 @@ class _HomeState extends State<Home> {
   static const IconData search = IconData(0xe567, fontFamily: 'MaterialIcons');
   String? nowMonth;
   int today = DateTime.now().day;
-  String selectedDateTime = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  // String selectedDateTime = DateFormat('yyyy-MM-dd').format(DateTime.now());
   List<Map<int, String>> dayOfTheWeek = [];
   List<String> currentWeek = [];
   List<List<String>> weeks = [];
@@ -43,6 +51,8 @@ class _HomeState extends State<Home> {
   List<dynamic> dailyRecords = [];
   int foundScorllIndex = 0;
   String totalAmount = '';
+  final List<Map<String, IconData>> _addCategory = AddCategory().addIcons;
+  final List<Map<String, IconData>> _minusCategory = MinusCategory().MinusIcons;
 
   // functions start
 
@@ -200,12 +210,11 @@ class _HomeState extends State<Home> {
     return result;
   }
 
-  Future<void> initializeData() async {
+  Future<void> initializeData(selectedDate) async {
     try {
       getDate();
-      String result1 = await getTotalAmountOfAday(selectedDateTime);
-      List<Map<String, dynamic>> result2 =
-          await getDailyRecords(selectedDateTime);
+      String result1 = await getTotalAmountOfAday(selectedDate);
+      List<Map<String, dynamic>> result2 = await getDailyRecords(selectedDate);
       foundScorllIndex = foundIndex(DateTime.now().day);
 
       setState(() {
@@ -225,10 +234,40 @@ class _HomeState extends State<Home> {
     return '';
   }
 
+  IconData whatIconIs(String recordCategory, String sign) {
+    IconData result = const IconData(0xee80, fontFamily: 'MaterialIcons');
+    if (sign == '+') {
+      for (int i = 0; i < _addCategory.length; i++) {
+        if (recordCategory == _addCategory[i].keys.first) {
+          result = _addCategory[i].values.first;
+          break;
+        }
+      }
+    } else if (sign == '-') {
+      for (int i = 0; i < _minusCategory.length; i++) {
+        if (recordCategory == _minusCategory[i].keys.first) {
+          result = _minusCategory[i].values.first;
+          break;
+        }
+      }
+    } else if (sign == '') {
+      return result;
+    }
+
+    return result;
+  }
+
   // widget functions
 
   Widget getListExpenseTracker(context, dailyRecord) {
-    String formattedNumber = dailyRecord['amount'].toString().replaceAllMapped(
+    int? amount;
+
+    if (dailyRecord['amount'].toString().contains('-')) {
+      amount = dailyRecord['amount'].abs();
+    } else {
+      amount = dailyRecord['amount'];
+    }
+    String formattedNumber = amount.toString().replaceAllMapped(
           RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
           (Match match) => '${match[1]},',
         );
@@ -255,8 +294,9 @@ class _HomeState extends State<Home> {
             children: [
               Container(
                 // dailyRecord['category']
-                child: const Icon(
-                  money_outlined,
+                child: Icon(
+                  whatIconIs(dailyRecord['category'].toString(),
+                      sign), // output ex) Icons.shopping_cart_outlined
                   size: 23,
                 ),
               ),
@@ -271,6 +311,8 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    final datestate = Provider.of<Datestate>(context, listen: true);
+    // initializeData(datestate.selectedDateTime);
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: MediaQuery.of(context).size.height * 0.01,
@@ -403,11 +445,16 @@ class _HomeState extends State<Home> {
                                   return GestureDetector(
                                     onTap: () {
                                       setState(() {
-                                        today = int.parse(extractDay(day));
-                                        selectedDateTime = day;
-                                        getDailyRecords(selectedDateTime);
-                                        getTotalAmountOfAday(selectedDateTime);
+                                        // today = int.parse(extractDay(day));
+                                        // selectedDateTime = day;
+                                        context
+                                            .read<Datestate>()
+                                            .chageSelectedDateTime(day);
                                       });
+                                      getDailyRecords(
+                                          datestate.selectedDateTime);
+                                      getTotalAmountOfAday(
+                                          datestate.selectedDateTime);
                                     },
                                     child: Expanded(
                                       child: Container(
@@ -418,8 +465,9 @@ class _HomeState extends State<Home> {
                                         child: Text(
                                           day.isNotEmpty ? extractDay(day) : '',
                                           style: TextStyle(
-                                            color: extractDay(day) ==
-                                                    today.toString()
+                                            color: extractDay(datestate
+                                                        .selectedDateTime) ==
+                                                    extractDay(day)
                                                 ? Colors.redAccent
                                                 : Colors.black,
                                             fontSize: MediaQuery.of(context)
@@ -548,8 +596,8 @@ class _HomeState extends State<Home> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              AddData(selectedDateTime: selectedDateTime)),
+                          builder: (context) => AddData(
+                              selectedDateTime: datestate.selectedDateTime)),
                     ),
                   },
                   child: const Text('+'),
@@ -566,8 +614,8 @@ class _HomeState extends State<Home> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              MinusData(selectedDateTime: selectedDateTime)),
+                          builder: (context) => MinusData(
+                              selectedDateTime: datestate.selectedDateTime)),
                     ),
                   },
                   child: const Text('-'),
