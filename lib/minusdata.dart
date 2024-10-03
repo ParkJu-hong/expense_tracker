@@ -49,7 +49,7 @@ class _MinusDataState extends State<MinusData> {
     _controller.addListener(() {
       final text = _controller.text;
       _controller.value = _controller.value.copyWith(
-        text: formatNumber(text.replaceAll(',', '')), // 콤마 제거 후 다시 포맷
+        text: formatNumber(text.replaceAll(',', '')),
         selection: TextSelection.collapsed(
           offset: formatNumber(text.replaceAll(',', '')).length,
         ),
@@ -64,13 +64,11 @@ class _MinusDataState extends State<MinusData> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? storedId = prefs.getString('uuid');
 
-    // 하나라도 insert에 필요한 value들이 null이라면 그전에
-    // 유효성검사를 구현해야함
     int insertAmount = -(amountInput ?? 0);
 
     await supabase.from('daily_record').insert({
       'user_uuid': storedId.toString(),
-      'date': selectedDateTime, // widget.selectedDateTime.toString(),
+      'date': selectedDateTime,
       'category': categoryInput,
       'info': infoInput,
       'amount': insertAmount,
@@ -87,9 +85,9 @@ class _MinusDataState extends State<MinusData> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back), // 왼쪽 방향 화살표 아이콘
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context); // 이전 화면으로 돌아가기
+            Navigator.pop(context);
           },
         ),
         toolbarHeight: MediaQuery.of(context).size.height * 0.08,

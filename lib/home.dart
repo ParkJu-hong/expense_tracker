@@ -22,10 +22,8 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    // initState 내에서 Provider 값에 안전하게 접근하는 방법
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final dateState = Provider.of<Datestate>(context, listen: false);
-      // dateState를 사용하여 초기화 작업 수행
       initializeData(dateState.selectedDateTime);
     });
   }
@@ -41,7 +39,6 @@ class _HomeState extends State<Home> {
   static const IconData search = IconData(0xe567, fontFamily: 'MaterialIcons');
   String? nowMonth;
   int today = DateTime.now().day;
-  // String selectedDateTime = DateFormat('yyyy-MM-dd').format(DateTime.now());
   List<Map<int, String>> dayOfTheWeek = [];
   List<String> currentWeek = [];
   List<List<String>> weeks = [];
@@ -157,7 +154,6 @@ class _HomeState extends State<Home> {
         .then((value) {
           int totalAmountResult = 0;
 
-          // 데이터 리스트를 순회하면서 합계 계산
           for (var item in value) {
             final dailyRecords = item['daily_record'] as List?;
             if (dailyRecords != null) {
@@ -293,10 +289,8 @@ class _HomeState extends State<Home> {
           Row(
             children: [
               Container(
-                // dailyRecord['category']
                 child: Icon(
-                  whatIconIs(dailyRecord['category'].toString(),
-                      sign), // output ex) Icons.shopping_cart_outlined
+                  whatIconIs(dailyRecord['category'].toString(), sign),
                   size: 23,
                 ),
               ),
@@ -312,7 +306,6 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     final datestate = Provider.of<Datestate>(context, listen: true);
-    // initializeData(datestate.selectedDateTime);
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: MediaQuery.of(context).size.height * 0.01,
@@ -445,8 +438,6 @@ class _HomeState extends State<Home> {
                                   return GestureDetector(
                                     onTap: () {
                                       setState(() {
-                                        // today = int.parse(extractDay(day));
-                                        // selectedDateTime = day;
                                         context
                                             .read<Datestate>()
                                             .chageSelectedDateTime(day);

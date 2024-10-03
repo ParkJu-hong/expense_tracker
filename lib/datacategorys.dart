@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class AddCategory {
-  // 아이콘 데이터를 배열로 관리
   final List<Map<String, IconData>> addIcons = [
     {'월급': Icons.wallet_outlined},
     {'용돈': Icons.money},

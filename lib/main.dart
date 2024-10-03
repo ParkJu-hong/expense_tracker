@@ -5,7 +5,7 @@ import 'package:uuid/uuid.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
-import 'package:expense_tracker/datestate.dart'; // Datestate 클래스 임포트
+import 'package:expense_tracker/datestate.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +20,7 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => Datestate()), // 상태 제공
+        ChangeNotifierProvider(create: (_) => Datestate()),
       ],
       child: const MyApp(),
     ),

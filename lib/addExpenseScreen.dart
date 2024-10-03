@@ -18,7 +18,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
       'title': title,
       'amount': amount,
     });
-    //.execute();
+
     if (response.error != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: ${response.error!.message}')),

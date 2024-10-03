@@ -50,7 +50,7 @@ class _AddDataState extends State<AddData> {
     _controller.addListener(() {
       final text = _controller.text;
       _controller.value = _controller.value.copyWith(
-        text: formatNumber(text.replaceAll(',', '')), // 콤마 제거 후 다시 포맷
+        text: formatNumber(text.replaceAll(',', '')),
         selection: TextSelection.collapsed(
           offset: formatNumber(text.replaceAll(',', '')).length,
         ),
@@ -67,7 +67,7 @@ class _AddDataState extends State<AddData> {
     print('categoryInput : $categoryInput');
     await supabase.from('daily_record').insert({
       'user_uuid': storedId.toString(),
-      'date': selectedDateTime, //widget.selectedDateTime.toString(),
+      'date': selectedDateTime,
       'category': categoryInput,
       'info': infoInput,
       'amount': amountInput
