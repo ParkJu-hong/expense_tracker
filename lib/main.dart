@@ -1,3 +1,4 @@
+import 'package:expense_tracker/fixedexpense.dart';
 import 'package:expense_tracker/home.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';

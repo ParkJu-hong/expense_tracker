@@ -59,8 +59,6 @@ class _AddDataState extends State<AddData> {
   }
 
   Future<void> insertDailyRecord(String selectedDateTime) async {
-    DateTime now = DateTime.now();
-    String dateString = now.toIso8601String();
     final supabase = Supabase.instance.client;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? storedId = prefs.getString('uuid');

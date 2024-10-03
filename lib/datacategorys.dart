@@ -20,3 +20,19 @@ class MinusCategory {
     {'기타': Icons.add_chart},
   ];
 }
+
+class FixedCategory {
+  final List<Map<String, IconData>> fixedIcons = [
+    {'주거비': Icons.home_max_outlined},
+    {'공과금': Icons.scale_outlined},
+    {'통신비': Icons.phone_iphone_outlined},
+    {'저축': Icons.savings_outlined},
+    {'보험': Icons.nature_people_outlined},
+  ];
+}
+
+class SpecialCategory {
+  final Map<String, IconData> specialIcon = {
+    '특별지출': Icons.star_border_outlined
+  };
+}

@@ -1,6 +1,11 @@
+import 'package:expense_tracker/fixedexpense.dart';
+import 'package:expense_tracker/home.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:provider/provider.dart';
+import 'package:expense_tracker/datestate.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -10,18 +15,192 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  final supabase = Supabase.instance.client;
   static const IconData cancel_outlined =
       IconData(0xef28, fontFamily: 'MaterialIcons');
-
   final storage = const FlutterSecureStorage();
+  String? selectedDateTime;
+  String? selectedYear;
+  String? selectedMonth;
+  String? selectedDay;
+  String? incomeExpense;
+  String? livingExpenses;
+  String? fixedExpenses;
+  String? specialExpenses;
+  String? totalExpenses;
 
-  Future<void> test() async {
-    print(await storage.readAll());
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final dateState = Provider.of<Datestate>(context, listen: false);
+      initializeData(dateState.selectedDateTime);
+    });
+  }
+
+  Future<void> initializeData(String selectedDate) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? storedId = prefs.getString('uuid');
+    String? incomeExpenseResult;
+    String? livingExpensesResult;
+    String? fixedExpensesResult;
+    String? specialExpensesResult;
+    String? totalExpensesResult;
+
+    selectedYear = selectedDate.split('-')[0];
+    selectedMonth = selectedDate.split('-')[1];
+    selectedDay = selectedDate.split('-')[2];
+    DateTime startDate = DateTime.parse('$selectedYear-$selectedMonth-01');
+    DateTime nextMonthStartDate =
+        DateTime(startDate.year, startDate.month + 1, 1);
+
+    // 수입 Income
+    await supabase
+        .from('daily_record')
+        .select('amount')
+        .eq('user_uuid', storedId.toString())
+        .gte('date', '$selectedYear-$selectedMonth-01') // 시작일 (1일)
+        .lt('date', nextMonthStartDate.toIso8601String()) // 다음 월의 첫날 이전
+        .or('category.eq.월급,category.eq.용돈,category.eq.기타')
+        .then((recordAmounts) {
+      int totalAmountResult = 0;
+
+      for (var recordAmount in recordAmounts) {
+        totalAmountResult += (recordAmount['amount'] ?? 0) as int;
+      }
+
+      String formattedNumber = totalAmountResult.toString().replaceAllMapped(
+            RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+            (Match match) => '${match[1]},',
+          );
+
+      incomeExpenseResult = formattedNumber;
+    }).catchError((error) {
+      print(error);
+    });
+
+    // 생활비 Living expenses
+    String getLivingExQuery =
+        "category.eq.식비,category.eq.생활용품,category.eq.교통우류비,category.eq.문화생활비,category.eq.의류미용비,category.eq.의료/건강";
+    await supabase
+        .from('daily_record')
+        .select('amount')
+        .eq('user_uuid', storedId.toString())
+        .gte('date', '$selectedYear-$selectedMonth-01') // 시작일 (1일)
+        .lt('date', nextMonthStartDate.toIso8601String()) // 다음 월의 첫날 이전
+        .or(getLivingExQuery)
+        .then((recordAmounts) {
+      int totalAmountResult = 0;
+
+      for (var recordAmount in recordAmounts) {
+        totalAmountResult += (recordAmount['amount'] ?? 0) as int;
+      }
+
+      String formattedNumber = totalAmountResult.toString().replaceAllMapped(
+            RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+            (Match match) => '${match[1]},',
+          );
+
+      print('livingExpensesResult test : $formattedNumber');
+      livingExpensesResult = formattedNumber;
+    }).catchError((error) {
+      print(error);
+    });
+
+    // 고정지출 Fixed expenses
+    await supabase
+        .from('daily_record')
+        .select('amount, category')
+        .eq('user_uuid', storedId.toString())
+        .gte('date', '$selectedYear-$selectedMonth-01') // 시작일 (1일)
+        .lt('date', nextMonthStartDate.toIso8601String()) // 다음 월의 첫날 이전
+        .or('category.eq.주거비,category.eq.공과금,category.eq.통신비,category.eq.저축,category.eq.보험')
+        .then((recordAmounts) {
+      int totalAmountResult = 0;
+      if (recordAmounts.isNotEmpty) {
+        for (var recordAmount in recordAmounts) {
+          totalAmountResult += (recordAmount['amount'] ?? 0) as int;
+        }
+      }
+
+      String formattedNumber = totalAmountResult.toString().replaceAllMapped(
+            RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+            (Match match) => '${match[1]},',
+          );
+      fixedExpensesResult = formattedNumber;
+    }).catchError((error) {
+      print(error);
+    });
+
+    // 특별지출 Special expenses
+    await supabase
+        .from('daily_record')
+        .select('amount, category')
+        .eq('user_uuid', storedId.toString())
+        .gte('date', '$selectedYear-$selectedMonth-01') // 시작일 (1일)
+        .lt('date', nextMonthStartDate.toIso8601String()) // 다음 월의 첫날 이전
+        .or('category.eq.특별지출,category.eq.경조비')
+        .then((recordAmounts) {
+      int totalAmountResult = 0;
+      if (recordAmounts.isNotEmpty) {
+        for (var recordAmount in recordAmounts) {
+          totalAmountResult += (recordAmount['amount'] ?? 0) as int;
+        }
+      }
+
+      String formattedNumber = totalAmountResult.toString().replaceAllMapped(
+            RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+            (Match match) => '${match[1]},',
+          );
+      specialExpensesResult = formattedNumber;
+    }).catchError((error) {
+      print(error);
+    });
+
+    // 총 지출 Total expenses
+    String getTotalExQuery =
+        "category.eq.식비,category.eq.생활용품,category.eq.교통우류비,category.eq.문화생활비,category.eq.의류미용비,category.eq.의료/건강,category.eq.경조비,category.eq.기타,category.eq.특별지출,category.eq.주거비,category.eq.공과금,category.eq.통신비,category.eq.저축,category.eq.보험";
+    await supabase
+        .from('daily_record')
+        .select('amount')
+        .eq('user_uuid', storedId.toString())
+        .eq('date', selectedDate)
+        .or(getTotalExQuery)
+        .then((recordAmounts) {
+      int totalAmountResultTemp = 0;
+
+      for (var recordAmount in recordAmounts) {
+        totalAmountResultTemp += (recordAmount['amount'] ?? 0) as int;
+      }
+
+      String formattedNumber =
+          totalAmountResultTemp.toString().replaceAllMapped(
+                RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+                (Match match) => '${match[1]},',
+              );
+
+      print('totalExpensesResult test : $formattedNumber');
+      totalExpensesResult = formattedNumber;
+    }).catchError((error) {
+      print(error);
+    });
+
+    setState(() {
+      selectedDateTime = selectedDate;
+      selectedYear = selectedDate.split('-')[0];
+      selectedMonth = selectedDate.split('-')[1];
+      selectedDay = selectedDate.split('-')[2];
+
+      incomeExpense = incomeExpenseResult;
+      livingExpenses = livingExpensesResult;
+      specialExpenses = specialExpensesResult;
+      fixedExpenses = fixedExpensesResult;
+      totalExpenses = totalExpensesResult;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    test();
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: MediaQuery.of(context).size.height * 0.01,
@@ -51,12 +230,19 @@ class _DashboardState extends State<Dashboard> {
                             size: MediaQuery.of(context).size.width * 0.09,
                           )),
                       Text(
-                        '9월',
+                        '$selectedMonth 월',
                         style: TextStyle(
                             fontSize: MediaQuery.of(context).size.width * 0.05),
                       ),
                       IconButton(
-                        onPressed: () => {Navigator.pop(context)},
+                        onPressed: () => {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const Home(),
+                            ),
+                          ),
+                        },
                         icon: Icon(
                           cancel_outlined,
                           size: MediaQuery.of(context).size.width * 0.09,
@@ -87,9 +273,18 @@ class _DashboardState extends State<Dashboard> {
                       ),
                       Row(
                         children: [
-                          const Text('38,000원'),
+                          Text('$incomeExpense 원'),
                           IconButton(
-                            onPressed: () => {},
+                            onPressed: () => {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const FixedExpense(
+                                    whatRecordsIs: 'income',
+                                  ),
+                                ),
+                              ),
+                            },
                             icon: Icon(
                               Icons.arrow_right,
                               size: MediaQuery.of(context).size.width * 0.09,
@@ -122,13 +317,23 @@ class _DashboardState extends State<Dashboard> {
                       ),
                       Row(
                         children: [
-                          const Text('38,000원'),
+                          Text('$livingExpenses 원'),
                           IconButton(
-                              onPressed: () => {},
-                              icon: Icon(
-                                Icons.arrow_right,
-                                size: MediaQuery.of(context).size.width * 0.09,
-                              )),
+                            onPressed: () => {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const FixedExpense(
+                                    whatRecordsIs: 'living',
+                                  ),
+                                ),
+                              ),
+                            },
+                            icon: Icon(
+                              Icons.arrow_right,
+                              size: MediaQuery.of(context).size.width * 0.09,
+                            ),
+                          ),
                         ],
                       ),
                     ],
@@ -156,13 +361,23 @@ class _DashboardState extends State<Dashboard> {
                       ),
                       Row(
                         children: [
-                          const Text('38,000원'),
+                          Text('$fixedExpenses 원'),
                           IconButton(
-                              onPressed: () => {},
-                              icon: Icon(
-                                Icons.arrow_right,
-                                size: MediaQuery.of(context).size.width * 0.09,
-                              )),
+                            onPressed: () => {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const FixedExpense(
+                                    whatRecordsIs: 'fixed',
+                                  ),
+                                ),
+                              ),
+                            },
+                            icon: Icon(
+                              Icons.arrow_right,
+                              size: MediaQuery.of(context).size.width * 0.09,
+                            ),
+                          ),
                         ],
                       ),
                     ],
@@ -190,13 +405,23 @@ class _DashboardState extends State<Dashboard> {
                       ),
                       Row(
                         children: [
-                          const Text('38,000원'),
+                          Text('$specialExpenses 원'),
                           IconButton(
-                              onPressed: () => {},
-                              icon: Icon(
-                                Icons.arrow_right,
-                                size: MediaQuery.of(context).size.width * 0.09,
-                              )),
+                            onPressed: () => {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const FixedExpense(
+                                    whatRecordsIs: 'special',
+                                  ),
+                                ),
+                              ),
+                            },
+                            icon: Icon(
+                              Icons.arrow_right,
+                              size: MediaQuery.of(context).size.width * 0.09,
+                            ),
+                          ),
                         ],
                       ),
                     ],
@@ -224,9 +449,18 @@ class _DashboardState extends State<Dashboard> {
                       ),
                       Row(
                         children: [
-                          const Text('38,000원'),
+                          Text('$totalExpenses 원'),
                           IconButton(
-                            onPressed: () => {},
+                            onPressed: () => {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const FixedExpense(
+                                    whatRecordsIs: 'totalAmount',
+                                  ),
+                                ),
+                              ),
+                            },
                             icon: Icon(
                               Icons.arrow_right,
                               size: MediaQuery.of(context).size.width * 0.09,

@@ -53,16 +53,18 @@ class _HomeState extends State<Home> {
 
   // functions start
 
-  List<String> setDate(List<Map<int, String>> dayOfTheWeek) {
+  List<String> setDate(
+      List<Map<int, String>> dayOfTheWeek, String selectedDate) {
     List<String> weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-    DateTime now = DateTime.now();
-    nowMonth = now.month.toString();
-    int currentDay = now.day;
+    String selectedYear = selectedDate.split('-')[0];
+    String selectedMonth = selectedDate.split('-')[1];
+    String selectedDay = selectedDate.split('-')[2];
+
+    nowMonth = selectedDate.split('-')[1];
+    int currentDay = int.parse(selectedDay);
 
     String firstDayOfMonth = dayOfTheWeek.first.values.first;
-    int month = now.month;
-    int year = now.year;
 
     List<String> firstWeek = [];
     int startIndex = weekDays.indexOf(firstDayOfMonth);
@@ -73,7 +75,7 @@ class _HomeState extends State<Home> {
 
     for (int i = 0; i < 7 - startIndex; i++) {
       String dateString =
-          '$year-${month.toString().padLeft(2, '0')}-${(i + 1).toString().padLeft(2, '0')}';
+          '$selectedYear-${selectedMonth.toString().padLeft(2, '0')}-${(i + 1).toString().padLeft(2, '0')}';
       firstWeek.add(dateString);
     }
     weeks.add(firstWeek);
@@ -82,7 +84,7 @@ class _HomeState extends State<Home> {
       List<String> week = [];
       for (int j = i; j < i + 7 && j < dayOfTheWeek.length; j++) {
         String dateString =
-            '$year-${month.toString().padLeft(2, '0')}-${(j + 1).toString().padLeft(2, '0')}';
+            '$selectedYear-${selectedMonth.toString().padLeft(2, '0')}-${(j + 1).toString().padLeft(2, '0')}';
         week.add(dateString);
       }
 
@@ -96,8 +98,9 @@ class _HomeState extends State<Home> {
 
     List<String> currentWeek = [];
     for (var week in weeks) {
-      if (week.contains('$year-${month.toString().padLeft(2, '0')}-$currentDay'
-          .padLeft(2, '0'))) {
+      if (week.contains(
+          '$selectedYear-${selectedMonth.toString().padLeft(2, '0')}-$currentDay'
+              .padLeft(2, '0'))) {
         currentWeek = week;
         break;
       }
@@ -106,7 +109,7 @@ class _HomeState extends State<Home> {
     return currentWeek;
   }
 
-  void getDate() {
+  void getDate(String selectedDate) {
     DateTime now = DateTime.now();
 
     DateTime lastDayOfMonth = DateTime(now.year, now.month + 1, 0);
@@ -126,7 +129,7 @@ class _HomeState extends State<Home> {
       result.add({day.day: weekdays[day.weekday - 1]});
     }
 
-    currentWeek = setDate(result);
+    currentWeek = setDate(result, selectedDate);
   }
 
   int foundIndex(target) {
@@ -208,7 +211,7 @@ class _HomeState extends State<Home> {
 
   Future<void> initializeData(selectedDate) async {
     try {
-      getDate();
+      getDate(selectedDate);
       String result1 = await getTotalAmountOfAday(selectedDate);
       List<Map<String, dynamic>> result2 = await getDailyRecords(selectedDate);
       foundScorllIndex = foundIndex(DateTime.now().day);
@@ -329,19 +332,25 @@ class _HomeState extends State<Home> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(
-                          child: IconButton(
-                              onPressed: () => {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const Dashboard()),
-                                    )
-                                  },
-                              icon: Icon(
-                                space_dashboard_outlined,
-                                size: MediaQuery.of(context).size.width * 0.09,
-                              )),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              IconButton(
+                                  onPressed: () => {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const Dashboard()),
+                                        )
+                                      },
+                                  icon: Icon(
+                                    space_dashboard_outlined,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.09,
+                                  )),
+                            ],
+                          ),
                         ),
                         Expanded(
                           child: Row(
@@ -350,16 +359,19 @@ class _HomeState extends State<Home> {
                               Text(
                                 '$nowMonth 월',
                                 style: TextStyle(
-                                    fontSize:
-                                        MediaQuery.of(context).size.width *
-                                            0.05),
+                                  fontSize:
+                                      MediaQuery.of(context).size.width * 0.05,
+                                  fontWeight: FontWeight.w800,
+                                ),
                               ),
                             ],
                           ),
                         ),
                         Expanded(
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
+                              /* search route section
                               IconButton(
                                 onPressed: () => {
                                   Navigator.push(
@@ -374,6 +386,7 @@ class _HomeState extends State<Home> {
                                       MediaQuery.of(context).size.width * 0.09,
                                 ),
                               ),
+                              */
                               IconButton(
                                 onPressed: () => {
                                   Navigator.push(
@@ -437,6 +450,7 @@ class _HomeState extends State<Home> {
                                 children: weeks[pageIndex].map((day) {
                                   return GestureDetector(
                                     onTap: () {
+                                      print('day : $day');
                                       setState(() {
                                         context
                                             .read<Datestate>()
