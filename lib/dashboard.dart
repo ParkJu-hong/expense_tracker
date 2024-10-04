@@ -28,6 +28,7 @@ class _DashboardState extends State<Dashboard> {
   String? fixedExpenses;
   String? specialExpenses;
   String? totalExpenses;
+  Map<String, double>? ratioOfTotalAmount = {};
 
   @override
   void initState() {
@@ -46,6 +47,9 @@ class _DashboardState extends State<Dashboard> {
     String? fixedExpensesResult;
     String? specialExpensesResult;
     String? totalExpensesResult;
+    int totalLivingAmountResult = 0;
+    int totalFixedAmountResult = 0;
+    int totalSpecialAmountResult = 0;
 
     selectedYear = selectedDate.split('-')[0];
     selectedMonth = selectedDate.split('-')[1];
@@ -90,18 +94,16 @@ class _DashboardState extends State<Dashboard> {
         .lt('date', nextMonthStartDate.toIso8601String()) // 다음 월의 첫날 이전
         .or(getLivingExQuery)
         .then((recordAmounts) {
-      int totalAmountResult = 0;
-
       for (var recordAmount in recordAmounts) {
-        totalAmountResult += (recordAmount['amount'] ?? 0) as int;
+        totalLivingAmountResult += (recordAmount['amount'] ?? 0) as int;
       }
 
-      String formattedNumber = totalAmountResult.toString().replaceAllMapped(
-            RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
-            (Match match) => '${match[1]},',
-          );
+      String formattedNumber =
+          totalLivingAmountResult.toString().replaceAllMapped(
+                RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+                (Match match) => '${match[1]},',
+              );
 
-      print('livingExpensesResult test : $formattedNumber');
       livingExpensesResult = formattedNumber;
     }).catchError((error) {
       print(error);
@@ -116,17 +118,17 @@ class _DashboardState extends State<Dashboard> {
         .lt('date', nextMonthStartDate.toIso8601String()) // 다음 월의 첫날 이전
         .or('category.eq.주거비,category.eq.공과금,category.eq.통신비,category.eq.저축,category.eq.보험')
         .then((recordAmounts) {
-      int totalAmountResult = 0;
       if (recordAmounts.isNotEmpty) {
         for (var recordAmount in recordAmounts) {
-          totalAmountResult += (recordAmount['amount'] ?? 0) as int;
+          totalFixedAmountResult += (recordAmount['amount'] ?? 0) as int;
         }
       }
 
-      String formattedNumber = totalAmountResult.toString().replaceAllMapped(
-            RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
-            (Match match) => '${match[1]},',
-          );
+      String formattedNumber =
+          totalFixedAmountResult.toString().replaceAllMapped(
+                RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+                (Match match) => '${match[1]},',
+              );
       fixedExpensesResult = formattedNumber;
     }).catchError((error) {
       print(error);
@@ -141,17 +143,17 @@ class _DashboardState extends State<Dashboard> {
         .lt('date', nextMonthStartDate.toIso8601String()) // 다음 월의 첫날 이전
         .or('category.eq.특별지출,category.eq.경조비')
         .then((recordAmounts) {
-      int totalAmountResult = 0;
       if (recordAmounts.isNotEmpty) {
         for (var recordAmount in recordAmounts) {
-          totalAmountResult += (recordAmount['amount'] ?? 0) as int;
+          totalSpecialAmountResult += (recordAmount['amount'] ?? 0) as int;
         }
       }
 
-      String formattedNumber = totalAmountResult.toString().replaceAllMapped(
-            RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
-            (Match match) => '${match[1]},',
-          );
+      String formattedNumber =
+          totalSpecialAmountResult.toString().replaceAllMapped(
+                RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+                (Match match) => '${match[1]},',
+              );
       specialExpensesResult = formattedNumber;
     }).catchError((error) {
       print(error);
@@ -179,7 +181,6 @@ class _DashboardState extends State<Dashboard> {
                 (Match match) => '${match[1]},',
               );
 
-      print('totalExpensesResult test : $formattedNumber');
       totalExpensesResult = formattedNumber;
     }).catchError((error) {
       print(error);
@@ -196,6 +197,16 @@ class _DashboardState extends State<Dashboard> {
       specialExpenses = specialExpensesResult;
       fixedExpenses = fixedExpensesResult;
       totalExpenses = totalExpensesResult;
+
+      double forFixed = double.parse(totalFixedAmountResult.toString());
+      double forLiving = double.parse(totalLivingAmountResult.toString());
+      double forSpecial = double.parse(totalSpecialAmountResult.toString());
+
+      if (forFixed != null && forLiving != null && forSpecial != null) {
+        ratioOfTotalAmount!['고정지출'] = forFixed;
+        ratioOfTotalAmount!['생활비'] = forLiving;
+        ratioOfTotalAmount!['특별지출'] = forSpecial;
+      }
     });
   }
 
@@ -279,7 +290,7 @@ class _DashboardState extends State<Dashboard> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const FixedExpense(
+                                  builder: (context) => FixedExpense(
                                     whatRecordsIs: 'income',
                                   ),
                                 ),
@@ -323,7 +334,7 @@ class _DashboardState extends State<Dashboard> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const FixedExpense(
+                                  builder: (context) => FixedExpense(
                                     whatRecordsIs: 'living',
                                   ),
                                 ),
@@ -367,7 +378,7 @@ class _DashboardState extends State<Dashboard> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const FixedExpense(
+                                  builder: (context) => FixedExpense(
                                     whatRecordsIs: 'fixed',
                                   ),
                                 ),
@@ -411,8 +422,9 @@ class _DashboardState extends State<Dashboard> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const FixedExpense(
+                                  builder: (context) => FixedExpense(
                                     whatRecordsIs: 'special',
+                                    ratioOfTotalAmount: ratioOfTotalAmount,
                                   ),
                                 ),
                               ),
@@ -455,8 +467,9 @@ class _DashboardState extends State<Dashboard> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const FixedExpense(
+                                  builder: (context) => FixedExpense(
                                     whatRecordsIs: 'totalAmount',
+                                    ratioOfTotalAmount: ratioOfTotalAmount,
                                   ),
                                 ),
                               ),

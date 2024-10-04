@@ -99,10 +99,10 @@ class _FixedDataState extends State<FixedData> {
               context,
               MaterialPageRoute(
                 builder: (context) => widget.whatRecordIs == 'fixed'
-                    ? const FixedExpense(
+                    ? FixedExpense(
                         whatRecordsIs: 'fixed',
                       )
-                    : const FixedExpense(
+                    : FixedExpense(
                         whatRecordsIs: 'special',
                       ),
               ),
@@ -245,10 +245,10 @@ class _FixedDataState extends State<FixedData> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => widget.whatRecordIs == 'fixed'
-                                ? const FixedExpense(
+                                ? FixedExpense(
                                     whatRecordsIs: 'fixed',
                                   )
-                                : const FixedExpense(
+                                : FixedExpense(
                                     whatRecordsIs: 'special',
                                   ),
                           ));

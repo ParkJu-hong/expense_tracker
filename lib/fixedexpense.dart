@@ -8,18 +8,21 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:pie_chart/pie_chart.dart';
 
 /*
   month records
 */
 
 class FixedExpense extends StatefulWidget {
-  const FixedExpense({
+  FixedExpense({
     super.key,
     this.whatRecordsIs,
+    this.ratioOfTotalAmount,
   });
 
   final String? whatRecordsIs;
+  Map<String, double>? ratioOfTotalAmount;
 
   @override
   State<FixedExpense> createState() => _FixedExpenseState();
@@ -35,9 +38,12 @@ class _FixedExpenseState extends State<FixedExpense> {
   String? totalFixedAmount;
   List<Map<String, dynamic>> toalFixedAmountRecords = [];
   String recordsTypeTitle = "";
+  double? heightFor;
+  Map<String, double>? dataMap;
 
   @override
   void initState() {
+    dataMap = widget.ratioOfTotalAmount;
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -171,6 +177,40 @@ class _FixedExpenseState extends State<FixedExpense> {
     );
   }
 
+  Widget getCircleGraphExpenseWidget(context, dailyRecords) {
+    return Container(
+        height: MediaQuery.of(context).size.height * 0.4,
+        // alignment: AlignmentGeometry.lerp(a, b, t),
+        margin: EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.02),
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(5)),
+          border: Border.all(
+            color: Colors.black,
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            PieChart(
+              dataMap: dataMap!,
+              animationDuration: const Duration(milliseconds: 800),
+              //chartType: ChartType.ring, // 또는 ChartType.disc
+              chartValuesOptions: const ChartValuesOptions(
+                showChartValueBackground: true,
+                showChartValues: true,
+                showChartValuesInPercentage: false,
+                showChartValuesOutside: false,
+                decimalPlaces: 1,
+              ),
+              legendOptions: const LegendOptions(
+                showLegends: true, // 범례 표시 여부
+              ),
+            ),
+          ],
+        ));
+  }
+
   @override
   Widget build(BuildContext context) {
     final datestate = Provider.of<Datestate>(context, listen: true);
@@ -207,7 +247,9 @@ class _FixedExpenseState extends State<FixedExpense> {
                 ),
               ),
               Container(
-                height: MediaQuery.of(context).size.height * 0.7,
+                height: widget.whatRecordsIs == 'totalAmount'
+                    ? MediaQuery.of(context).size.height * 0.3
+                    : MediaQuery.of(context).size.height * 0.7,
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: Colors.black,
@@ -220,6 +262,8 @@ class _FixedExpenseState extends State<FixedExpense> {
                   ],
                 ),
               ),
+              if (widget.whatRecordsIs == 'totalAmount')
+                getCircleGraphExpenseWidget(context, toalFixedAmountRecords)
             ],
           ),
           if (widget.whatRecordsIs == 'fixed')

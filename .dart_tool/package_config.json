@@ -308,6 +308,12 @@
       "languageVersion": "3.2"
     },
     {
+      "name": "pie_chart",
+      "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/pie_chart-5.4.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "platform",
       "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/platform-3.1.5",
       "packageUri": "lib/",
@@ -608,7 +614,7 @@
       "languageVersion": "3.5"
     }
   ],
-  "generated": "2024-09-30T05:50:56.677640Z",
+  "generated": "2024-10-04T04:48:07.297628Z",
   "generator": "pub",
   "generatorVersion": "3.5.3",
   "flutterRoot": "file:///usr/local/Caskroom/flutter/3.24.3/flutter",
