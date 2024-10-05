@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:expense_tracker/datestate.dart';
 import 'package:expense_tracker/datacategorys.dart';
+import 'package:month_year_picker/month_year_picker.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -21,48 +22,45 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   void initState() {
-    super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final dateState = Provider.of<Datestate>(context, listen: false);
       initializeData(dateState.selectedDateTime);
     });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _pageViewController.dispose();
   }
 
   // Initialize variables
   final supabase = Supabase.instance.client;
   static const IconData space_dashboard_outlined =
       IconData(0xf3bd, fontFamily: 'MaterialIcons');
-  static const IconData money_outlined =
-      IconData(0xf1e0, fontFamily: 'MaterialIcons');
-  static const IconData calendar_month =
-      IconData(0xf06bb, fontFamily: 'MaterialIcons');
-  static const IconData search = IconData(0xe567, fontFamily: 'MaterialIcons');
   String? nowMonth;
   int today = DateTime.now().day;
   List<Map<int, String>> dayOfTheWeek = [];
-  List<String> currentWeek = [];
   List<List<String>> weeks = [];
-  Map<String, dynamic> test = {
-    '': '',
-  };
   List<dynamic> dailyRecords = [];
   int foundScorllIndex = 0;
   String totalAmount = '';
   final List<Map<String, IconData>> _addCategory = AddCategory().addIcons;
   final List<Map<String, IconData>> _minusCategory = MinusCategory().MinusIcons;
+  late PageController _pageViewController = PageController(
+    initialPage: 1,
+  );
 
   // functions start
 
-  List<String> setDate(
-      List<Map<int, String>> dayOfTheWeek, String selectedDate) {
+  void setDate(List<Map<int, String>> dayOfTheWeek, String selectedDate) {
     List<String> weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
     String selectedYear = selectedDate.split('-')[0];
     String selectedMonth = selectedDate.split('-')[1];
-    String selectedDay = selectedDate.split('-')[2];
 
     nowMonth = selectedDate.split('-')[1];
-    int currentDay = int.parse(selectedDay);
 
     String firstDayOfMonth = dayOfTheWeek.first.values.first;
 
@@ -95,30 +93,21 @@ class _HomeState extends State<Home> {
       }
       weeks.add(week);
     }
-
-    List<String> currentWeek = [];
-    for (var week in weeks) {
-      if (week.contains(
-          '$selectedYear-${selectedMonth.toString().padLeft(2, '0')}-$currentDay'
-              .padLeft(2, '0'))) {
-        currentWeek = week;
-        break;
-      }
-    }
-
-    return currentWeek;
   }
 
   void getDate(String selectedDate) {
-    DateTime now = DateTime.now();
+    DateTime tempSelectedDate = DateTime.parse(selectedDate);
+    String tempSelectedDateString = formatDate(selectedDate);
 
-    DateTime lastDayOfMonth = DateTime(now.year, now.month + 1, 0);
+    DateTime lastDayOfMonth =
+        DateTime(tempSelectedDate.year, tempSelectedDate.month + 1, 0);
 
     int daysInMonth = lastDayOfMonth.day;
     List<DateTime> daysOfMonth = [];
 
     for (int i = 0; i < daysInMonth; i++) {
-      daysOfMonth.add(DateTime(now.year, now.month, i + 1));
+      daysOfMonth.add(DateTime(int.parse(tempSelectedDateString.split('-')[0]),
+          int.parse(tempSelectedDateString.split('-')[1]), i + 1));
     }
 
     List<String> weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -129,15 +118,17 @@ class _HomeState extends State<Home> {
       result.add({day.day: weekdays[day.weekday - 1]});
     }
 
-    currentWeek = setDate(result, selectedDate);
+    setDate(result, selectedDate);
   }
 
   int foundIndex(target) {
     int foundIndex = -1;
     for (int i = 0; i < weeks.length; i++) {
-      if (weeks[i].contains(target.toString())) {
-        foundIndex = i;
-        break;
+      for (int j = 0; j < weeks[i].length; j++) {
+        if (weeks[i][j].contains(target.toString())) {
+          foundIndex = i;
+          break;
+        }
       }
     }
     return foundIndex;
@@ -196,7 +187,6 @@ class _HomeState extends State<Home> {
         .eq('daily_record.user_uuid', storedId.toString())
         .eq('daily_record.date', nowDate)
         .then((value) {
-          print('test getDailyRecords $value');
           setState(() {
             dailyRecords = value[0]['daily_record'];
           });
@@ -214,11 +204,14 @@ class _HomeState extends State<Home> {
       getDate(selectedDate);
       String result1 = await getTotalAmountOfAday(selectedDate);
       List<Map<String, dynamic>> result2 = await getDailyRecords(selectedDate);
-      foundScorllIndex = foundIndex(DateTime.now().day);
-
       setState(() {
         dailyRecords = result2[0]['daily_record'];
         totalAmount = result1;
+        foundScorllIndex = foundIndex(selectedDate.toString());
+        print("foundScorllIndex : $foundScorllIndex");
+        _pageViewController = PageController(
+          initialPage: foundScorllIndex,
+        );
       });
     } catch (error) {
       print(error);
@@ -306,6 +299,40 @@ class _HomeState extends State<Home> {
     );
   }
 
+  Future<void> _onPressed(
+      {required BuildContext context,
+      String? locale,
+      String? selectedDateTime}) async {
+    /*
+      selectedDateTime가 widget.selectedDateTime에서 오는게 아니여야함.
+      9월클릭하면 2024-09-01과 같은 문자열 데이터가 넘어와야하는데,,
+      
+     */
+    final localeObj = locale != null ? Locale(locale) : null;
+    final selected = await showMonthYearPicker(
+      context: context,
+      initialDate: DateTime.parse(selectedDateTime.toString()),
+      firstDate: DateTime(2019),
+      lastDate: DateTime(2030),
+      locale: localeObj,
+    );
+
+    if (selected != null) {
+      weeks.clear();
+      String yearMonthDay = formatDate(selected.toString());
+      setState(() {
+        context.read<Datestate>().chageSelectedDateTime(yearMonthDay);
+      });
+      await initializeData(yearMonthDay);
+    }
+  }
+
+  String formatDate(String dateString) {
+    DateTime? parsedDate = DateTime.parse(dateString);
+
+    return '${parsedDate.year}-${parsedDate.month.toString().padLeft(2, '0')}-${parsedDate.day.toString().padLeft(2, '0')}';
+  }
+
   @override
   Widget build(BuildContext context) {
     final datestate = Provider.of<Datestate>(context, listen: true);
@@ -354,49 +381,41 @@ class _HomeState extends State<Home> {
                         ),
                         Expanded(
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                '$nowMonth 월',
-                                style: TextStyle(
-                                  fontSize:
-                                      MediaQuery.of(context).size.width * 0.05,
-                                  fontWeight: FontWeight.w800,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                TextButton(
+                                  child: Text(
+                                    '$nowMonth 월',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize:
+                                          MediaQuery.of(context).size.width *
+                                              0.06,
+                                    ),
+                                  ),
+                                  onPressed: () async => _onPressed(
+                                      context: context,
+                                      locale: 'ko',
+                                      selectedDateTime:
+                                          datestate.selectedDateTime),
                                 ),
-                              ),
-                            ],
-                          ),
+                              ]),
                         ),
                         Expanded(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              /* search route section
                               IconButton(
                                 onPressed: () => {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => const Search()),
-                                  )
-                                },
-                                icon: Icon(
-                                  search,
-                                  size:
-                                      MediaQuery.of(context).size.width * 0.09,
-                                ),
-                              ),
-                              */
-                              IconButton(
-                                onPressed: () => {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
+                                        // setting router
                                         builder: (context) => const Calender()),
                                   )
                                 },
                                 icon: Icon(
-                                  calendar_month,
+                                  Icons.settings,
                                   size:
                                       MediaQuery.of(context).size.width * 0.09,
                                 ),
@@ -438,9 +457,7 @@ class _HomeState extends State<Home> {
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.1,
                           child: PageView.builder(
-                            controller: PageController(
-                              initialPage: foundScorllIndex,
-                            ),
+                            controller: _pageViewController,
                             itemCount: weeks.length,
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (context, pageIndex) {
@@ -450,7 +467,6 @@ class _HomeState extends State<Home> {
                                 children: weeks[pageIndex].map((day) {
                                   return GestureDetector(
                                     onTap: () {
-                                      print('day : $day');
                                       setState(() {
                                         context
                                             .read<Datestate>()

@@ -116,6 +116,12 @@
       "languageVersion": "3.1"
     },
     {
+      "name": "flutter_localizations",
+      "rootUri": "file:///usr/local/Caskroom/flutter/3.24.3/flutter/packages/flutter_localizations",
+      "packageUri": "lib/",
+      "languageVersion": "3.2"
+    },
+    {
       "name": "flutter_secure_storage",
       "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/flutter_secure_storage-9.2.2",
       "packageUri": "lib/",
@@ -258,6 +264,12 @@
       "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/mime-1.0.6",
       "packageUri": "lib/",
       "languageVersion": "3.2"
+    },
+    {
+      "name": "month_year_picker",
+      "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/month_year_picker-0.4.0+1",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
     },
     {
       "name": "nested",
@@ -614,7 +626,7 @@
       "languageVersion": "3.5"
     }
   ],
-  "generated": "2024-10-04T04:48:07.297628Z",
+  "generated": "2024-10-04T20:40:40.193178Z",
   "generator": "pub",
   "generatorVersion": "3.5.3",
   "flutterRoot": "file:///usr/local/Caskroom/flutter/3.24.3/flutter",

@@ -166,11 +166,12 @@ class _DashboardState extends State<Dashboard> {
         .from('daily_record')
         .select('amount')
         .eq('user_uuid', storedId.toString())
-        .eq('date', selectedDate)
+        .gte('date', '$selectedYear-$selectedMonth-01') // 시작일 (1일)
+        .lt('date', nextMonthStartDate.toIso8601String()) // 다음 월의 첫날 이전
         .or(getTotalExQuery)
         .then((recordAmounts) {
       int totalAmountResultTemp = 0;
-
+      print("recordAmounts : $recordAmounts");
       for (var recordAmount in recordAmounts) {
         totalAmountResultTemp += (recordAmount['amount'] ?? 0) as int;
       }
