@@ -96,6 +96,7 @@ class _FixedExpenseState extends State<FixedExpense> {
         .lt('date', nextMonthStartDate.toIso8601String()) // 다음 월의 첫날 이전
         .or(categoryQuery)
         .then((recordAmounts) {
+      print("recordAmounts test : $recordAmounts");
       int totalAmountResult = 0;
       if (recordAmounts.isNotEmpty) {
         for (var recordAmount in recordAmounts) {

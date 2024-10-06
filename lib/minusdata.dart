@@ -143,7 +143,7 @@ class _MinusDataState extends State<MinusData> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    for (int i = 4; i <= 7; i++)
+                    for (int i = 4; i <= 6; i++)
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           foregroundColor: selectedIconIndex == i

@@ -1,5 +1,6 @@
 import 'package:expense_tracker/adddata.dart';
 import 'package:expense_tracker/minusdata.dart';
+import 'package:expense_tracker/setting.dart';
 import 'package:flutter/material.dart';
 import 'package:expense_tracker/dashboard.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,6 +9,8 @@ import 'package:provider/provider.dart';
 import 'package:expense_tracker/datestate.dart';
 import 'package:expense_tracker/datacategorys.dart';
 import 'package:month_year_picker/month_year_picker.dart';
+
+import 'package:expense_tracker/createexcelfile.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -23,6 +26,7 @@ class _HomeState extends State<Home> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final dateState = Provider.of<Datestate>(context, listen: false);
       initializeData(dateState.selectedDateTime);
+      createExcelFile(dateState.selectedDateTime);
     });
   }
 
@@ -409,14 +413,12 @@ class _HomeState extends State<Home> {
                             children: [
                               IconButton(
                                 onPressed: () => {
-                                  _pageViewController
-                                      .jumpToPage(foundScorllIndex)
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //       // setting router
-                                  //       builder: (context) => const Calender()),
-                                  // )
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        // setting router
+                                        builder: (context) => const Setting()),
+                                  )
                                 },
                                 icon: Icon(
                                   Icons.settings,

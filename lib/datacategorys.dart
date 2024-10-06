@@ -17,7 +17,6 @@ class MinusCategory {
     {'의류미용비': Icons.face_2_outlined},
     {'의료/건강': Icons.health_and_safety_outlined},
     {'경조비': Icons.account_balance_wallet_outlined},
-    {'기타': Icons.add_chart},
   ];
 }
 
