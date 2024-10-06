@@ -28,6 +28,7 @@ class _DashboardState extends State<Dashboard> {
   String? fixedExpenses;
   String? specialExpenses;
   String? totalExpenses;
+  String? remainingBudget;
   Map<String, double>? ratioOfTotalAmount = {};
 
   @override
@@ -47,9 +48,12 @@ class _DashboardState extends State<Dashboard> {
     String? fixedExpensesResult;
     String? specialExpensesResult;
     String? totalExpensesResult;
+
     int totalLivingAmountResult = 0;
     int totalFixedAmountResult = 0;
     int totalSpecialAmountResult = 0;
+    int totalAmountResult = 0;
+    int totalAmountResultTemp = 0;
 
     selectedYear = selectedDate.split('-')[0];
     selectedMonth = selectedDate.split('-')[1];
@@ -67,8 +71,6 @@ class _DashboardState extends State<Dashboard> {
         .lt('date', nextMonthStartDate.toIso8601String()) // 다음 월의 첫날 이전
         .or('category.eq.월급,category.eq.용돈,category.eq.기타')
         .then((recordAmounts) {
-      int totalAmountResult = 0;
-
       for (var recordAmount in recordAmounts) {
         totalAmountResult += (recordAmount['amount'] ?? 0) as int;
       }
@@ -170,7 +172,6 @@ class _DashboardState extends State<Dashboard> {
         .lt('date', nextMonthStartDate.toIso8601String()) // 다음 월의 첫날 이전
         .or(getTotalExQuery)
         .then((recordAmounts) {
-      int totalAmountResultTemp = 0;
       print("recordAmounts : $recordAmounts");
       for (var recordAmount in recordAmounts) {
         totalAmountResultTemp += (recordAmount['amount'] ?? 0) as int;
@@ -187,6 +188,12 @@ class _DashboardState extends State<Dashboard> {
       print(error);
     });
 
+    String tempRemainingBudget =
+        (totalAmountResult + totalAmountResultTemp).toString().replaceAllMapped(
+              RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+              (Match match) => '${match[1]},',
+            );
+
     setState(() {
       selectedDateTime = selectedDate;
       selectedYear = selectedDate.split('-')[0];
@@ -198,6 +205,7 @@ class _DashboardState extends State<Dashboard> {
       specialExpenses = specialExpensesResult;
       fixedExpenses = fixedExpensesResult;
       totalExpenses = totalExpensesResult;
+      remainingBudget = tempRemainingBudget;
 
       double forFixed = double.parse(totalFixedAmountResult.toString());
       double forLiving = double.parse(totalLivingAmountResult.toString());
@@ -480,6 +488,34 @@ class _DashboardState extends State<Dashboard> {
                               size: MediaQuery.of(context).size.width * 0.09,
                             ),
                           ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            // total cost
+            Expanded(
+              flex: 2,
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.black,
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        '남은 예산',
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      Row(
+                        children: [
+                          Text('$remainingBudget 원'),
                         ],
                       ),
                     ],
