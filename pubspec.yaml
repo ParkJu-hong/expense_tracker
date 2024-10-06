@@ -49,6 +49,9 @@ dependencies:
   pie_chart: ^5.4.0
   month_year_picker: ^0.4.0+1
   syncfusion_flutter_xlsio: ^27.1.51
+  flutter_email_sender: ^6.0.3
+  syncfusion_flutter_datepicker: ^27.1.51
+  package_info_plus: ^8.0.2
 
 dev_dependencies:
   flutter_test:

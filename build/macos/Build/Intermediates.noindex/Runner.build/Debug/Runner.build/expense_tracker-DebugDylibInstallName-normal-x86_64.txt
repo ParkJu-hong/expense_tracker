@@ -1,1 +1,0 @@
-@rpath/expense_tracker.debug.dylib

@@ -1,11 +1,15 @@
 import 'package:expense_tracker/fixedexpense.dart';
 import 'package:expense_tracker/home.dart';
+import 'package:expense_tracker/resetdata.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:expense_tracker/datestate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+import 'package:intl/intl.dart';
+import 'package:expense_tracker/createexcelfile.dart';
 
 class Setting extends StatefulWidget {
   const Setting({super.key});
@@ -15,10 +19,47 @@ class Setting extends StatefulWidget {
 }
 
 class _SettingState extends State<Setting> {
-  void test() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? storedId = prefs.getString('uuid');
-    final supabase = Supabase.instance.client;
+  String _selectedDate = '';
+  String _dateCount = '';
+  String _range = '';
+  String _rangeCount = '';
+  String seletedStartDate = '';
+  String seletedEndDate = '';
+
+  String formatDate(String dateString) {
+    DateTime? parsedDate = DateTime.parse(dateString);
+
+    return '${parsedDate.year}-${parsedDate.month.toString().padLeft(2, '0')}-${parsedDate.day.toString().padLeft(2, '0')}';
+  }
+
+  void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
+    if (args.value is PickerDateRange) {
+      _range = '${DateFormat('yyyy/MM/dd').format(args.value.startDate)} -'
+          // ignore: lines_longer_than_80_chars
+          ' ${DateFormat('yyyy/MM/dd').format(args.value.endDate ?? args.value.startDate)}';
+    } else if (args.value is DateTime) {
+      _selectedDate = args.value.toString();
+    } else if (args.value is List<DateTime>) {
+      _dateCount = args.value.length.toString();
+    } else {
+      _rangeCount = args.value.length.toString();
+    }
+
+    setState(() {
+      seletedStartDate = formatDateRange(_range)[0];
+      seletedStartDate = formatDateRange(_range)[1];
+    });
+  }
+
+  List<String> formatDateRange(String dateRange) {
+    // 슬래시와 공백을 기준으로 문자열을 분리
+    List<String> dates = dateRange.split(' - ');
+
+    // 각 날짜를 '/'를 '-'로 변환
+    String startDate = dates[0].replaceAll('/', '-');
+    String endDate = dates[1].replaceAll('/', '-');
+
+    return [startDate, endDate];
   }
 
   @override
@@ -85,17 +126,12 @@ class _SettingState extends State<Setting> {
                       children: [
                         IconButton(
                           onPressed: () => {
-                            /*
-                            // 전체 데이터 초기화로 라우팅
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => FixedExpense(
-                                  whatRecordsIs: 'fixed',
-                                ),
+                                builder: (context) => const ResetData(),
                               ),
                             ),
-                            */
                           },
                           icon: Icon(
                             Icons.arrow_right,
@@ -117,34 +153,100 @@ class _SettingState extends State<Setting> {
               child: Padding(
                 padding: const EdgeInsets.all(10),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    const Text(
-                      'Export Excel With E-mail',
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                    Row(
-                      children: [
-                        IconButton(
-                          onPressed: () => {
-                            /*
-                            // 엑셀 이메일로 보내는 위젯으로 라우팅
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => FixedExpense(
-                                  whatRecordsIs: 'fixed',
-                                ),
-                              ),
+                    TextButton(
+                      onPressed: () => showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          title: SizedBox(
+                            height: 300,
+                            width: 300,
+                            child: SfDateRangePicker(
+                              onSelectionChanged: _onSelectionChanged,
+                              selectionMode: DateRangePickerSelectionMode.range,
                             ),
-                            */
-                          },
-                          icon: Icon(
+                          ),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () async {
+                                String filePath = await createExcelFile(
+                                    seletedStartDate, seletedEndDate);
+                                await sendEmailWithAttachmentExcel(filePath,
+                                    seletedStartDate, seletedEndDate, context);
+
+                                // Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //         builder: (context) => const Setting()));
+                              },
+                              child: const Text('확인'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text('취소'),
+                            ),
+                          ],
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            "Export excel with Email",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.04),
+                          ),
+                          Icon(
                             Icons.arrow_right,
                             size: MediaQuery.of(context).size.width * 0.09,
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.black,
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () async {
+                        await sendEmailFeedback(context);
+                        // Optionally, you can show a confirmation message after sending feedback.
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('피드백이 전송되었습니다. 감사합니다!')),
+                        );
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            "피드백",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.04),
                           ),
-                        ),
-                      ],
+                          Icon(
+                            Icons.arrow_right,
+                            size: MediaQuery.of(context).size.width * 0.09,
+                          )
+                        ],
+                      ),
                     ),
                   ],
                 ),

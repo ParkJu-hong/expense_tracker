@@ -9,6 +9,7 @@
 import 'package:app_links_web/app_links_web.dart';
 import 'package:device_info_plus/src/device_info_plus_web.dart';
 import 'package:flutter_secure_storage_web/flutter_secure_storage_web.dart';
+import 'package:package_info_plus/src/package_info_plus_web.dart';
 import 'package:shared_preferences_web/shared_preferences_web.dart';
 import 'package:sign_in_with_apple_web/sign_in_with_apple_web.dart';
 import 'package:url_launcher_web/url_launcher_web.dart';
@@ -19,6 +20,7 @@ void registerPlugins([final Registrar? pluginRegistrar]) {
   AppLinksPluginWeb.registerWith(registrar);
   DeviceInfoPlusWebPlugin.registerWith(registrar);
   FlutterSecureStorageWeb.registerWith(registrar);
+  PackageInfoPlusWebPlugin.registerWith(registrar);
   SharedPreferencesPlugin.registerWith(registrar);
   SignInWithApplePlugin.registerWith(registrar);
   UrlLauncherPlugin.registerWith(registrar);

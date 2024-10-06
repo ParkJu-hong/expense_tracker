@@ -70,6 +70,10 @@ fixnum
 2.19
 file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/fixnum-1.1.0/
 file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/fixnum-1.1.0/lib/
+flutter_email_sender
+2.12
+file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/flutter_email_sender-6.0.3/
+file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/flutter_email_sender-6.0.3/lib/
 flutter_lints
 3.1
 file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/flutter_lints-4.0.0/
@@ -178,6 +182,14 @@ nested
 2.12
 file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/nested-1.0.0/
 file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/nested-1.0.0/lib/
+package_info_plus
+3.3
+file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/package_info_plus-8.0.2/
+file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/package_info_plus-8.0.2/lib/
+package_info_plus_platform_interface
+2.18
+file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/package_info_plus_platform_interface-3.0.1/
+file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/package_info_plus_platform_interface-3.0.1/lib/
 path
 3.0
 file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/path-1.9.0/
@@ -322,6 +334,10 @@ syncfusion_flutter_core
 2.17
 file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/syncfusion_flutter_core-27.1.51/
 file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/syncfusion_flutter_core-27.1.51/lib/
+syncfusion_flutter_datepicker
+2.17
+file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/syncfusion_flutter_datepicker-27.1.51/
+file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/syncfusion_flutter_datepicker-27.1.51/lib/
 syncfusion_flutter_xlsio
 2.17
 file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/syncfusion_flutter_xlsio-27.1.51/

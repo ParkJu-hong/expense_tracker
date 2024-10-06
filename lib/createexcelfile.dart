@@ -1,12 +1,17 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart' as xlsio;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter/services.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'dart:io'; // For platform check (iOS/Android)
 
-void createExcelFile(String selectedDate) async {
+Future<String> createExcelFile(
+    String seletedStartDate, String seletedEndDate) async {
   // 엑셀 문서 생성
   final xlsio.Workbook workbook = xlsio.Workbook();
   final xlsio.Worksheet sheet = workbook.worksheets[0];
@@ -28,12 +33,12 @@ void createExcelFile(String selectedDate) async {
   String? storedId = prefs.getString('uuid');
   final supabase = Supabase.instance.client;
 
-  String selectedYear = selectedDate.split('-')[0];
-  String selectedMonth = selectedDate.split('-')[1];
+  // String selectedYear = selectedDate.split('-')[0];
+  // String selectedMonth = selectedDate.split('-')[1];
 
-  DateTime startDate = DateTime.parse('$selectedYear-$selectedMonth-01');
-  DateTime nextMonthStartDate =
-      DateTime(startDate.year, startDate.month + 1, 1);
+  // DateTime startDate = DateTime.parse('$selectedYear-$selectedMonth-01');
+  // DateTime nextMonthStartDate =
+  //     DateTime(startDate.year, startDate.month + 1, 1);
 
   // 샘플 데이터
   List<Map<String, dynamic>>? incomeData = [];
@@ -49,8 +54,8 @@ void createExcelFile(String selectedDate) async {
       .from('daily_record')
       .select('amount, category, info, date')
       .eq('user_uuid', storedId.toString())
-      .gte('date', '$selectedYear-$selectedMonth-01') // 시작일 (1일)
-      .lt('date', nextMonthStartDate.toIso8601String()) // 다음 월의 첫날 이전
+      .gte('date', seletedStartDate) // 시작일 (1일)
+      .lt('date', seletedEndDate) // 다음 월의 첫날 이전
       .or('category.eq.월급,category.eq.용돈,category.eq.기타')
       .then((recordAmounts) {
     incomeData = recordAmounts;
@@ -65,9 +70,8 @@ void createExcelFile(String selectedDate) async {
       .from('daily_record')
       .select('amount, category, info, date')
       .eq('user_uuid', storedId.toString())
-      .gte('date', '$selectedYear-$selectedMonth-01') // 시작일 (1일)
-      .lt('date', nextMonthStartDate.toIso8601String()) // 다음 월의 첫날 이전
-      .or(getLivingExQuery)
+      .gte('date', seletedStartDate) // 시작일 (1일)
+      .lt('date', seletedEndDate) // 다음 월의 첫날 이전.or(getLivingExQuery)
       .then((recordAmounts) {
     expenseData = recordAmounts;
   }).catchError((error) {
@@ -79,9 +83,9 @@ void createExcelFile(String selectedDate) async {
       .from('daily_record')
       .select('amount, category, info, date')
       .eq('user_uuid', storedId.toString())
-      .gte('date', '$selectedYear-$selectedMonth-01') // 시작일 (1일)
-      .lt('date', nextMonthStartDate.toIso8601String()) // 다음 월의 첫날 이전
-      .or('category.eq.주거비,category.eq.공과금,category.eq.통신비,category.eq.저축,category.eq.보험')
+      .gte('date', seletedStartDate) // 시작일 (1일)
+      .lt('date',
+          seletedEndDate) // 다음 월의 첫날 이전.or('category.eq.주거비,category.eq.공과금,category.eq.통신비,category.eq.저축,category.eq.보험')
       .then((recordAmounts) {
     fixedExpenseData = recordAmounts;
   }).catchError((error) {
@@ -93,8 +97,8 @@ void createExcelFile(String selectedDate) async {
       .from('daily_record')
       .select('amount, category, info, date')
       .eq('user_uuid', storedId.toString())
-      .gte('date', '$selectedYear-$selectedMonth-01') // 시작일 (1일)
-      .lt('date', nextMonthStartDate.toIso8601String()) // 다음 월의 첫날 이전
+      .gte('date', seletedStartDate) // 시작일 (1일)
+      .lt('date', seletedEndDate) // 다음 월의 첫날 이전
       .or('category.eq.특별지출,category.eq.경조비')
       .then((recordAmounts) {
     specialExpenseData = recordAmounts;
@@ -152,37 +156,145 @@ void createExcelFile(String selectedDate) async {
   await file.writeAsBytes(bytes, flush: true);
 
   print('엑셀 파일이 저장되었습니다: $filePath');
+  return filePath;
+}
 
-  /* PC
-  // 파일 저장 경로 설정 (바탕화면)
-  Directory? directory;
+Future<void> sendEmailWithAttachmentExcel(
+    String filePath,
+    String seletedStartDate,
+    String seletedEndDate,
+    BuildContext context) async {
+  final Email email = Email(
+    body: '$seletedStartDate ~ $seletedEndDate 의 가계부 엑셀 파일을 첨부합니다.',
+    subject: '가계부 $seletedStartDate ~ $seletedEndDate 의 가계부 엑셀 데이터',
+    recipients: ['bejejupark@gmail.com'], // 이메일 수신자
+    attachmentPaths: [filePath], // 엑셀 파일 경로
+    isHTML: false,
+  );
 
-  if (Platform.isWindows) {
-    final userName = Platform.environment['USERPROFILE'];
-    directory = Directory('C:\\Users\\$userName\\Desktop');
-  } else if (Platform.isMacOS) {
-    final userName = Platform.environment['USER'];
-    directory = Directory('/Users/$userName/Desktop');
-  } else if (Platform.isLinux) {
-    final userName = Platform.environment['USER'];
-    directory = Directory('/home/$userName/Desktop');
+  try {
+    await FlutterEmailSender.send(email);
+  } on PlatformException catch (e) {
+    if (e.code == 'not_available') {
+      // 이메일 클라이언트를 찾을 수 없을 때 사용자에게 안내 메시지 표시
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('이메일 클라이언트 없음'),
+          content: const Text(
+              '기본 메일 앱을 사용할 수 없기 때문에 앱에서 바로 문의를 전송하기 어려운 상황입니다.\n\n아래 이메일로 연락주시면 친절하게 답변해드릴게요 :)\n\nbejejupark@gmail.com'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('확인'),
+            ),
+          ],
+        ),
+      );
+    } else {
+      // 다른 에러 처리
+      print('Error: ${e.toString()}');
+    }
   }
-  final userName = Platform.environment['USER'];
-  print("userName test : $userName");
-  directory = Directory('/Users/bagjuhong/Desktop');
-  print("directory test : $directory");
+}
 
-  // 파일을 저장할 경로를 설정합니다 (예: 데스크탑).
-  String filePath = '${directory.path}/output.xlsx';
+Future<void> sendEmailFeedback(BuildContext context) async {
+  String body = await _getEmailBody();
 
-  // 파일 저장
-  final List<int> bytes = workbook.saveAsStream();
-  workbook.dispose();
+  final Email email = Email(
+    body: body,
+    subject: '[가계뿌 문의]',
+    recipients: ['bejejupark@gmail.com'], // 이메일 수신자
+    attachmentPaths: [], // 엑셀 파일 경로
+    isHTML: false,
+  );
 
-  // 파일 쓰기
-  final file = File(filePath);
-  await file.writeAsBytes(bytes, flush: true);
+  try {
+    await FlutterEmailSender.send(email);
+  } on PlatformException catch (e) {
+    if (e.code == 'not_available') {
+      // 이메일 클라이언트를 찾을 수 없을 때 사용자에게 안내 메시지 표시
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('이메일 클라이언트 없음'),
+          content: const Text(
+              '기본 메일 앱을 사용할 수 없기 때문에 앱에서 바로 문의를 전송하기 어려운 상황입니다.\n\n아래 이메일로 연락주시면 친절하게 답변해드릴게요 :)\n\nbejejupark@gmail.com'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('확인'),
+            ),
+          ],
+        ),
+      );
+    } else {
+      // 다른 에러 처리
+      print('Error: ${e.toString()}');
+    }
+  }
+}
 
-  print('엑셀 파일이 저장되었습니다: $filePath');
-  */
+Future<String> _getEmailBody() async {
+  Map<String, dynamic> appInfo = await _getAppInfo();
+  Map<String, dynamic> deviceInfo = await _getDeviceInfo();
+
+  String body = "";
+
+  body += "==============\n";
+  body += "아래 내용을 함께 보내주시면 큰 도움이 됩니다 🧅\n";
+
+  appInfo.forEach((key, value) {
+    body += "$key: $value\n";
+  });
+
+  deviceInfo.forEach((key, value) {
+    body += "$key: $value\n";
+  });
+
+  body += "==============\n";
+
+  return body;
+}
+
+Future<Map<String, dynamic>> _getAppInfo() async {
+  final packageInfo = await PackageInfo.fromPlatform();
+
+  return {
+    "App Name": packageInfo.appName,
+    "Package Name": packageInfo.packageName,
+    "Version": packageInfo.version,
+    "Build Number": packageInfo.buildNumber,
+  };
+}
+
+Future<Map<String, dynamic>> _getDeviceInfo() async {
+  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+
+  if (Platform.isAndroid) {
+    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+    return {
+      "Operating System": "Android",
+      "Model": androidInfo.model,
+      "Manufacturer": androidInfo.manufacturer,
+      "Android Version": androidInfo.version.release,
+      "SDK": androidInfo.version.sdkInt,
+    };
+  } else if (Platform.isIOS) {
+    IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+    return {
+      "Operating System": "iOS",
+      "Model": iosInfo.utsname.machine,
+      "System Version": iosInfo.systemVersion,
+      "Name": iosInfo.name,
+    };
+  }
+
+  return {
+    "Operating System": "Unknown",
+  };
 }

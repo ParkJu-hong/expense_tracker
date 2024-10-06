@@ -10,8 +10,6 @@ import 'package:expense_tracker/datestate.dart';
 import 'package:expense_tracker/datacategorys.dart';
 import 'package:month_year_picker/month_year_picker.dart';
 
-import 'package:expense_tracker/createexcelfile.dart';
-
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -26,7 +24,7 @@ class _HomeState extends State<Home> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final dateState = Provider.of<Datestate>(context, listen: false);
       initializeData(dateState.selectedDateTime);
-      createExcelFile(dateState.selectedDateTime);
+      // createExcelFile(dateState.selectedDateTime);
     });
   }
 
@@ -309,11 +307,6 @@ class _HomeState extends State<Home> {
       {required BuildContext context,
       String? locale,
       String? selectedDateTime}) async {
-    /*
-      selectedDateTime가 widget.selectedDateTime에서 오는게 아니여야함.
-      9월클릭하면 2024-09-01과 같은 문자열 데이터가 넘어와야하는데,,
-      
-     */
     final localeObj = locale != null ? Locale(locale) : null;
     final selected = await showMonthYearPicker(
       context: context,
@@ -387,25 +380,26 @@ class _HomeState extends State<Home> {
                         ),
                         Expanded(
                           child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                TextButton(
-                                  child: Text(
-                                    '$nowMonth 월',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize:
-                                          MediaQuery.of(context).size.width *
-                                              0.06,
-                                    ),
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              TextButton(
+                                child: Text(
+                                  '$nowMonth 월',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize:
+                                        MediaQuery.of(context).size.width *
+                                            0.06,
                                   ),
-                                  onPressed: () async => _onPressed(
-                                      context: context,
-                                      locale: 'ko',
-                                      selectedDateTime:
-                                          datestate.selectedDateTime),
                                 ),
-                              ]),
+                                onPressed: () async => _onPressed(
+                                    context: context,
+                                    locale: 'ko',
+                                    selectedDateTime:
+                                        datestate.selectedDateTime),
+                              ),
+                            ],
+                          ),
                         ),
                         Expanded(
                           child: Row(
