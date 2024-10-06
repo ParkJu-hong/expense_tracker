@@ -1,12 +1,9 @@
 import 'package:expense_tracker/adddata.dart';
-import 'package:expense_tracker/calender.dart';
 import 'package:expense_tracker/minusdata.dart';
 import 'package:flutter/material.dart';
 import 'package:expense_tracker/dashboard.dart';
-import 'package:expense_tracker/search.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:expense_tracker/datestate.dart';
 import 'package:expense_tracker/datacategorys.dart';
@@ -22,17 +19,19 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   void initState() {
+    super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final dateState = Provider.of<Datestate>(context, listen: false);
       initializeData(dateState.selectedDateTime);
     });
-    super.initState();
   }
 
   @override
   void dispose() {
+    if (_pageViewController.hasClients) {
+      _pageViewController.dispose();
+    }
     super.dispose();
-    _pageViewController.dispose();
   }
 
   // Initialize variables
@@ -48,8 +47,8 @@ class _HomeState extends State<Home> {
   String totalAmount = '';
   final List<Map<String, IconData>> _addCategory = AddCategory().addIcons;
   final List<Map<String, IconData>> _minusCategory = MinusCategory().MinusIcons;
-  late PageController _pageViewController = PageController(
-    initialPage: 1,
+  PageController _pageViewController = PageController(
+    initialPage: 0,
   );
 
   // functions start
@@ -204,14 +203,17 @@ class _HomeState extends State<Home> {
       getDate(selectedDate);
       String result1 = await getTotalAmountOfAday(selectedDate);
       List<Map<String, dynamic>> result2 = await getDailyRecords(selectedDate);
+      foundScorllIndex = foundIndex(selectedDate.toString());
+
+      if (_pageViewController.hasClients) {
+        _pageViewController.jumpToPage(foundScorllIndex);
+      } else {
+        _pageViewController = PageController(initialPage: foundScorllIndex);
+      }
+
       setState(() {
         dailyRecords = result2[0]['daily_record'];
         totalAmount = result1;
-        foundScorllIndex = foundIndex(selectedDate.toString());
-        print("foundScorllIndex : $foundScorllIndex");
-        _pageViewController = PageController(
-          initialPage: foundScorllIndex,
-        );
       });
     } catch (error) {
       print(error);
@@ -407,12 +409,14 @@ class _HomeState extends State<Home> {
                             children: [
                               IconButton(
                                 onPressed: () => {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        // setting router
-                                        builder: (context) => const Calender()),
-                                  )
+                                  _pageViewController
+                                      .jumpToPage(foundScorllIndex)
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //       // setting router
+                                  //       builder: (context) => const Calender()),
+                                  // )
                                 },
                                 icon: Icon(
                                   Icons.settings,
@@ -457,7 +461,8 @@ class _HomeState extends State<Home> {
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.1,
                           child: PageView.builder(
-                            controller: _pageViewController,
+                            controller:
+                                _pageViewController, //_pageViewController,
                             itemCount: weeks.length,
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (context, pageIndex) {
