@@ -291,13 +291,28 @@ class _HomeState extends State<Home> {
               Container(
                 child: Icon(
                   whatIconIs(dailyRecord['category'].toString(), sign),
-                  size: 23,
+                  size: MediaQuery.of(context).size.width * 0.09,
                 ),
               ),
-              Text(dailyRecord['category'].toString()),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.04,
+              ),
+              Text(
+                dailyRecord['category'].toString(),
+                style: TextStyle(
+                  fontSize: MediaQuery.of(context).size.width * 0.06,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ],
           ),
-          Text('$sign $formattedNumber 원'),
+          Text(
+            '$sign $formattedNumber 원',
+            style: TextStyle(
+              fontSize: MediaQuery.of(context).size.width * 0.05,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
         ],
       ),
     );
@@ -355,32 +370,32 @@ class _HomeState extends State<Home> {
                   child: Padding(
                     padding: const EdgeInsets.all(10),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               IconButton(
-                                  onPressed: () => {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const Dashboard()),
-                                        )
-                                      },
-                                  icon: Icon(
-                                    space_dashboard_outlined,
-                                    size: MediaQuery.of(context).size.width *
-                                        0.09,
-                                  )),
+                                onPressed: () => {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const Dashboard()),
+                                  )
+                                },
+                                icon: Icon(
+                                  space_dashboard_outlined,
+                                  size: MediaQuery.of(context).size.width * 0.1,
+                                ),
+                              ),
                             ],
                           ),
                         ),
                         Expanded(
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.end,
                             children: <Widget>[
                               TextButton(
                                 child: Text(
@@ -389,7 +404,7 @@ class _HomeState extends State<Home> {
                                     color: Colors.black,
                                     fontSize:
                                         MediaQuery.of(context).size.width *
-                                            0.06,
+                                            0.08,
                                   ),
                                 ),
                                 onPressed: () async => _onPressed(
@@ -397,28 +412,6 @@ class _HomeState extends State<Home> {
                                     locale: 'ko',
                                     selectedDateTime:
                                         datestate.selectedDateTime),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              IconButton(
-                                onPressed: () => {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        // setting router
-                                        builder: (context) => const Setting()),
-                                  )
-                                },
-                                icon: Icon(
-                                  Icons.settings,
-                                  size:
-                                      MediaQuery.of(context).size.width * 0.09,
-                                ),
                               ),
                             ],
                           ),
@@ -490,8 +483,17 @@ class _HomeState extends State<Home> {
                                             color: extractDay(datestate
                                                         .selectedDateTime) ==
                                                     extractDay(day)
-                                                ? Colors.redAccent
+                                                ? Colors.indigo
                                                 : Colors.black,
+                                            fontWeight: extractDay(datestate
+                                                        .selectedDateTime) ==
+                                                    extractDay(day)
+                                                ? FontWeight.w700
+                                                : FontWeight.w400,
+                                            // fontSize: MediaQuery.of(context)
+                                            //         .size
+                                            //         .width *
+                                            //     0.070,
                                             fontSize: MediaQuery.of(context)
                                                     .size
                                                     .width *
@@ -606,7 +608,7 @@ class _HomeState extends State<Home> {
           // Add or Minus record button of expense_tracker
           Positioned(
             left: MediaQuery.of(context).size.width * 0.65,
-            top: MediaQuery.of(context).size.height * 0.8,
+            top: MediaQuery.of(context).size.height * 0.79,
             child: Row(
               children: [
                 OutlinedButton(
@@ -618,11 +620,19 @@ class _HomeState extends State<Home> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => AddData(
-                              selectedDateTime: datestate.selectedDateTime)),
+                        builder: (context) => AddData(
+                          selectedDateTime: datestate.selectedDateTime,
+                        ),
+                      ),
                     ),
                   },
-                  child: const Text('+'),
+                  child: Text(
+                    '+',
+                    style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.width * 0.09,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.015,
@@ -640,7 +650,13 @@ class _HomeState extends State<Home> {
                               selectedDateTime: datestate.selectedDateTime)),
                     ),
                   },
-                  child: const Text('-'),
+                  child: Text(
+                    '-',
+                    style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.width * 0.09,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ),
               ],
             ),

@@ -1,12 +1,7 @@
-import 'package:expense_tracker/fixedexpense.dart';
+import 'package:expense_tracker/dashboard.dart';
 import 'package:expense_tracker/home.dart';
 import 'package:expense_tracker/resetdata.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:provider/provider.dart';
-import 'package:expense_tracker/datestate.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:intl/intl.dart';
 import 'package:expense_tracker/createexcelfile.dart';
@@ -74,6 +69,7 @@ class _SettingState extends State<Setting> {
           children: [
             // Header
             Container(
+              height: MediaQuery.of(context).size.height * 0.09,
               decoration: BoxDecoration(
                 border: Border.all(
                   color: Colors.black,
@@ -94,7 +90,7 @@ class _SettingState extends State<Setting> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const Home(),
+                            builder: (context) => const Dashboard(),
                           ),
                         ),
                       },
@@ -118,9 +114,12 @@ class _SettingState extends State<Setting> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                    Text(
                       '전체 데이터 초기화',
-                      style: TextStyle(fontWeight: FontWeight.w600),
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: MediaQuery.of(context).size.width * 0.06,
+                      ),
                     ),
                     Row(
                       children: [
@@ -135,7 +134,8 @@ class _SettingState extends State<Setting> {
                           },
                           icon: Icon(
                             Icons.arrow_right,
-                            size: MediaQuery.of(context).size.width * 0.09,
+                            size: MediaQuery.of(context).size.width * 0.12,
+                            weight: MediaQuery.of(context).size.width * 0.08,
                           ),
                         ),
                       ],
@@ -197,13 +197,15 @@ class _SettingState extends State<Setting> {
                           Text(
                             "Export excel with Email",
                             style: TextStyle(
-                                color: Colors.black,
-                                fontSize:
-                                    MediaQuery.of(context).size.width * 0.04),
+                              color: Colors.black,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.06,
+                            ),
                           ),
                           Icon(
                             Icons.arrow_right,
-                            size: MediaQuery.of(context).size.width * 0.09,
+                            size: MediaQuery.of(context).size.width * 0.12,
+                            weight: MediaQuery.of(context).size.width * 0.08,
                           )
                         ],
                       ),
@@ -237,13 +239,15 @@ class _SettingState extends State<Setting> {
                           Text(
                             "피드백",
                             style: TextStyle(
-                                color: Colors.black,
-                                fontSize:
-                                    MediaQuery.of(context).size.width * 0.04),
+                              color: Colors.black,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.06,
+                            ),
                           ),
                           Icon(
                             Icons.arrow_right,
-                            size: MediaQuery.of(context).size.width * 0.09,
+                            size: MediaQuery.of(context).size.width * 0.12,
+                            weight: MediaQuery.of(context).size.width * 0.08,
                           )
                         ],
                       ),

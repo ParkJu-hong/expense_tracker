@@ -1,5 +1,6 @@
 import 'package:expense_tracker/fixedexpense.dart';
 import 'package:expense_tracker/home.dart';
+import 'package:expense_tracker/setting.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +17,7 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   final supabase = Supabase.instance.client;
+  bool isLoading = true;
   static const IconData cancel_outlined =
       IconData(0xef28, fontFamily: 'MaterialIcons');
   final storage = const FlutterSecureStorage();
@@ -41,6 +43,9 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Future<void> initializeData(String selectedDate) async {
+    setState(() {
+      isLoading = true; // 데이터 로딩 시작
+    });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? storedId = prefs.getString('uuid');
     String? incomeExpenseResult;
@@ -216,6 +221,8 @@ class _DashboardState extends State<Dashboard> {
         ratioOfTotalAmount!['생활비'] = forLiving;
         ratioOfTotalAmount!['특별지출'] = forSpecial;
       }
+
+      isLoading = false; // 데이터 로딩 완료
     });
   }
 
@@ -225,307 +232,409 @@ class _DashboardState extends State<Dashboard> {
       appBar: AppBar(
         toolbarHeight: MediaQuery.of(context).size.height * 0.01,
       ),
-      body: SizedBox(
-        height: MediaQuery.of(context).size.height,
-        child: Column(
-          children: [
-            // Header
-            Expanded(
-              flex: 1,
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.black,
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
-                          onPressed: () => {},
-                          icon: Icon(
-                            Icons.settings,
-                            size: MediaQuery.of(context).size.width * 0.09,
-                          )),
-                      Text(
-                        '$selectedMonth 월',
-                        style: TextStyle(
-                            fontSize: MediaQuery.of(context).size.width * 0.05),
-                      ),
-                      IconButton(
-                        onPressed: () => {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const Home(),
-                            ),
-                          ),
-                        },
-                        icon: Icon(
-                          cancel_outlined,
-                          size: MediaQuery.of(context).size.width * 0.09,
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SizedBox(
+              height: MediaQuery.of(context).size.height,
+              child: Column(
+                children: [
+                  // Header
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.black,
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            // money incomed
-            Expanded(
-              flex: 1,
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.black,
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        '수입',
-                        style: TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      Row(
-                        children: [
-                          Text('$incomeExpense 원'),
-                          IconButton(
-                            onPressed: () => {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => FixedExpense(
-                                    whatRecordsIs: 'income',
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            IconButton(
+                                onPressed: () => {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => const Setting(),
+                                        ),
+                                      ),
+                                    },
+                                icon: Icon(
+                                  Icons.settings,
+                                  size:
+                                      MediaQuery.of(context).size.width * 0.09,
+                                )),
+                            Text(
+                              '$selectedMonth 월',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.08,
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () => {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const Home(),
                                   ),
                                 ),
+                              },
+                              icon: Icon(
+                                cancel_outlined,
+                                size: MediaQuery.of(context).size.width * 0.09,
                               ),
-                            },
-                            icon: Icon(
-                              Icons.arrow_right,
-                              size: MediaQuery.of(context).size.width * 0.09,
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-            ),
-            // cost of living
-            Expanded(
-              flex: 2,
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.black,
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        '생활비',
-                        style: TextStyle(fontWeight: FontWeight.w600),
+                  // money incomed
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.black,
+                        ),
                       ),
-                      Row(
-                        children: [
-                          Text('$livingExpenses 원'),
-                          IconButton(
-                            onPressed: () => {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => FixedExpense(
-                                    whatRecordsIs: 'living',
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '수입',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.06,
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  '$incomeExpense 원',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize:
+                                        MediaQuery.of(context).size.width *
+                                            0.04,
                                   ),
                                 ),
-                              ),
-                            },
-                            icon: Icon(
-                              Icons.arrow_right,
-                              size: MediaQuery.of(context).size.width * 0.09,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            // fixed expenses
-            Expanded(
-              flex: 1,
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.black,
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        '고정지출',
-                        style: TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      Row(
-                        children: [
-                          Text('$fixedExpenses 원'),
-                          IconButton(
-                            onPressed: () => {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => FixedExpense(
-                                    whatRecordsIs: 'fixed',
+                                IconButton(
+                                  onPressed: () => {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => FixedExpense(
+                                          whatRecordsIs: 'income',
+                                        ),
+                                      ),
+                                    ),
+                                  },
+                                  icon: Icon(
+                                    Icons.arrow_right,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.12,
+                                    weight: MediaQuery.of(context).size.width *
+                                        0.08,
                                   ),
                                 ),
-                              ),
-                            },
-                            icon: Icon(
-                              Icons.arrow_right,
-                              size: MediaQuery.of(context).size.width * 0.09,
+                              ],
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-            ),
-            // special expenditure
-            Expanded(
-              flex: 1,
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.black,
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        '특별지출',
-                        style: TextStyle(fontWeight: FontWeight.w600),
+                  // cost of living
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.black,
+                        ),
                       ),
-                      Row(
-                        children: [
-                          Text('$specialExpenses 원'),
-                          IconButton(
-                            onPressed: () => {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => FixedExpense(
-                                    whatRecordsIs: 'special',
-                                    ratioOfTotalAmount: ratioOfTotalAmount,
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '생활비',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.06,
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  '$livingExpenses 원',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize:
+                                        MediaQuery.of(context).size.width *
+                                            0.04,
                                   ),
                                 ),
-                              ),
-                            },
-                            icon: Icon(
-                              Icons.arrow_right,
-                              size: MediaQuery.of(context).size.width * 0.09,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            // total cost
-            Expanded(
-              flex: 2,
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.black,
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        '총 지출',
-                        style: TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      Row(
-                        children: [
-                          Text('$totalExpenses 원'),
-                          IconButton(
-                            onPressed: () => {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => FixedExpense(
-                                    whatRecordsIs: 'totalAmount',
-                                    ratioOfTotalAmount: ratioOfTotalAmount,
+                                IconButton(
+                                  onPressed: () => {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => FixedExpense(
+                                          whatRecordsIs: 'living',
+                                        ),
+                                      ),
+                                    ),
+                                  },
+                                  icon: Icon(
+                                    Icons.arrow_right,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.12,
+                                    weight: MediaQuery.of(context).size.width *
+                                        0.08,
                                   ),
                                 ),
-                              ),
-                            },
-                            icon: Icon(
-                              Icons.arrow_right,
-                              size: MediaQuery.of(context).size.width * 0.09,
+                              ],
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                  // fixed expenses
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.black,
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '고정지출',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.06,
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  '$fixedExpenses 원',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize:
+                                        MediaQuery.of(context).size.width *
+                                            0.04,
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () => {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => FixedExpense(
+                                          whatRecordsIs: 'fixed',
+                                        ),
+                                      ),
+                                    ),
+                                  },
+                                  icon: Icon(
+                                    Icons.arrow_right,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.12,
+                                    weight: MediaQuery.of(context).size.width *
+                                        0.08,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  // special expenditure
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.black,
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '특별지출',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.06,
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  '$specialExpenses 원',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize:
+                                        MediaQuery.of(context).size.width *
+                                            0.04,
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () => {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => FixedExpense(
+                                          whatRecordsIs: 'special',
+                                          ratioOfTotalAmount:
+                                              ratioOfTotalAmount,
+                                        ),
+                                      ),
+                                    ),
+                                  },
+                                  icon: Icon(
+                                    Icons.arrow_right,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.12,
+                                    weight: MediaQuery.of(context).size.width *
+                                        0.08,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  // total cost
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.black,
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '총 지출',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.06,
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  '$totalExpenses 원',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize:
+                                        MediaQuery.of(context).size.width *
+                                            0.04,
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () => {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => FixedExpense(
+                                          whatRecordsIs: 'totalAmount',
+                                          ratioOfTotalAmount:
+                                              ratioOfTotalAmount,
+                                        ),
+                                      ),
+                                    ),
+                                  },
+                                  icon: Icon(
+                                    Icons.arrow_right,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.12,
+                                    weight: MediaQuery.of(context).size.width *
+                                        0.08,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  // total cost
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.black,
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '남은 예산',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.06,
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  '$remainingBudget 원',
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize:
+                                          MediaQuery.of(context).size.width *
+                                              0.06,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                ],
               ),
             ),
-            // total cost
-            Expanded(
-              flex: 2,
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.black,
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        '남은 예산',
-                        style: TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      Row(
-                        children: [
-                          Text('$remainingBudget 원'),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
