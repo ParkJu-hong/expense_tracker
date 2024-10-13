@@ -183,11 +183,12 @@ class _HomeState extends State<Home> {
     await supabase
         .from('user_data')
         .select('''
-    daily_record(category, amount)
+    daily_record(id, category, amount, info, date)
     ''')
         .eq('daily_record.user_uuid', storedId.toString())
         .eq('daily_record.date', nowDate)
         .then((value) {
+          print("value : $value");
           setState(() {
             dailyRecords = value[0]['daily_record'];
           });
@@ -253,6 +254,24 @@ class _HomeState extends State<Home> {
     return result;
   }
 
+  Future<String> deleteRecord(int recordId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? storedId = prefs.getString('uuid');
+    String result = 'nothing';
+    await supabase
+        .from('daily_record')
+        .delete()
+        .eq('id', recordId)
+        .eq('user_uuid', storedId.toString())
+        .then((response) {
+      result = 'success';
+    }).catchError((error) {
+      print("deleted error : $error");
+      result = 'error';
+    });
+    return result;
+  }
+
   // widget functions
 
   Widget getListExpenseTracker(context, dailyRecord) {
@@ -273,47 +292,229 @@ class _HomeState extends State<Home> {
             ? '-'
             : '';
 
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.09,
-      margin: EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.02),
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(Radius.circular(5)),
-        border: Border.all(
-          color: Colors.black,
+    return GestureDetector(
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              backgroundColor: Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(
+                          whatIconIs(dailyRecord['category'].toString(), sign),
+                          size: MediaQuery.of(context).size.width * 0.09,
+                          // color: Colors.blue,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.03,
+                        ),
+                        Text(
+                          dailyRecord['category'],
+                          style: TextStyle(
+                            fontSize: MediaQuery.of(context).size.width * 0.08,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black, // 텍스트 색상
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8), // 요소 간 간격
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          dailyRecord['date'].toString(),
+                          style: TextStyle(
+                            fontSize: MediaQuery.of(context).size.width * 0.05,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey[600], // 회색 텍스트
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "$sign $formattedNumber 원",
+                          style: TextStyle(
+                            fontSize: MediaQuery.of(context).size.width * 0.07,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.blue, // 금액 색상
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          dailyRecord['info'].toString(),
+                          style: TextStyle(
+                            fontSize: MediaQuery.of(context).size.width * 0.05,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black87, // 다크 그레이 텍스트
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16), // 버튼과 텍스트 간격
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () async {
+                            String result =
+                                await deleteRecord(dailyRecord['id']);
+
+                            if (result == 'success') {
+                              return showDialog(
+                                context: context,
+                                barrierDismissible: true, // 모달 바깥을 클릭하면 닫히도록 설정
+                                builder: (context) {
+                                  return Dialog(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    backgroundColor: Colors.white,
+                                    child: Container(
+                                      padding: EdgeInsets.all(
+                                          MediaQuery.of(context).size.width *
+                                              0.03),
+                                      width: MediaQuery.of(context).size.width *
+                                          0.06,
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.1,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          const Text("삭제 되었습니다."),
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const Home()),
+                                              );
+                                            },
+                                            style: TextButton.styleFrom(
+                                              textStyle: const TextStyle(
+                                                color: Colors.blue,
+                                              ),
+                                            ),
+                                            child: const Text('확인'),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ).then((value) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const Home()),
+                                );
+                              });
+                            } else if (result == 'error') {
+                              return showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return Dialog(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    backgroundColor: Colors.white,
+                                    child: Container(
+                                      padding: EdgeInsets.all(
+                                          MediaQuery.of(context).size.width *
+                                              0.03),
+                                      width: MediaQuery.of(context).size.width *
+                                          0.06,
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.06,
+                                      child: const Text('오류가 발생하였습니다.'),
+                                    ),
+                                  );
+                                },
+                              );
+                            }
+                          },
+                          style: TextButton.styleFrom(
+                            textStyle: const TextStyle(
+                              color: Colors.blue,
+                            ),
+                          ),
+                          child: const Text('삭제'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+      child: Container(
+        height: MediaQuery.of(context).size.height * 0.09,
+        margin: EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.02),
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(5)),
+          border: Border.all(
+            color: Colors.black,
+          ),
         ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Container(
-                child: Icon(
-                  whatIconIs(dailyRecord['category'].toString(), sign),
-                  size: MediaQuery.of(context).size.width * 0.09,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Container(
+                  child: Icon(
+                    whatIconIs(dailyRecord['category'].toString(), sign),
+                    size: MediaQuery.of(context).size.width * 0.09,
+                  ),
                 ),
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.04,
-              ),
-              Text(
-                dailyRecord['category'].toString(),
-                style: TextStyle(
-                  fontSize: MediaQuery.of(context).size.width * 0.06,
-                  fontWeight: FontWeight.w500,
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.04,
                 ),
-              ),
-            ],
-          ),
-          Text(
-            '$sign $formattedNumber 원',
-            style: TextStyle(
-              fontSize: MediaQuery.of(context).size.width * 0.05,
-              fontWeight: FontWeight.w800,
+                Text(
+                  dailyRecord['category'].toString(),
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.width * 0.06,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
+            Text(
+              '$sign $formattedNumber 원',
+              style: TextStyle(
+                fontSize: MediaQuery.of(context).size.width * 0.05,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
