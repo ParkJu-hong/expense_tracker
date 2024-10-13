@@ -230,7 +230,42 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: MediaQuery.of(context).size.height * 0.01,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const Home(),
+              ),
+            );
+          },
+        ),
+        title: Text(
+          '$selectedMonth 월',
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: MediaQuery.of(context).size.width * 0.08,
+          ),
+        ),
+        centerTitle: true, // 타이틀을 가운데에 정렬
+        actions: [
+          IconButton(
+            onPressed: () => {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const Setting(),
+                ),
+              ),
+            },
+            icon: Icon(
+              Icons.settings,
+              size: MediaQuery.of(context).size.width * 0.09,
+            ),
+          ),
+        ],
+        toolbarHeight: MediaQuery.of(context).size.height * 0.08,
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -238,61 +273,6 @@ class _DashboardState extends State<Dashboard> {
               height: MediaQuery.of(context).size.height,
               child: Column(
                 children: [
-                  // Header
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.black,
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            IconButton(
-                                onPressed: () => {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => const Setting(),
-                                        ),
-                                      ),
-                                    },
-                                icon: Icon(
-                                  Icons.settings,
-                                  size:
-                                      MediaQuery.of(context).size.width * 0.09,
-                                )),
-                            Text(
-                              '$selectedMonth 월',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize:
-                                    MediaQuery.of(context).size.width * 0.08,
-                              ),
-                            ),
-                            IconButton(
-                              onPressed: () => {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const Home(),
-                                  ),
-                                ),
-                              },
-                              icon: Icon(
-                                cancel_outlined,
-                                size: MediaQuery.of(context).size.width * 0.09,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
                   // money incomed
                   Expanded(
                     flex: 1,

@@ -61,48 +61,30 @@ class _SettingState extends State<Setting> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: MediaQuery.of(context).size.height * 0.01,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const Dashboard(),
+              ),
+            );
+          },
+        ),
+        actions: [
+          Text(
+            '환경설정',
+            style:
+                TextStyle(fontSize: MediaQuery.of(context).size.width * 0.09),
+          ),
+        ],
+        toolbarHeight: MediaQuery.of(context).size.height * 0.08,
       ),
       body: SizedBox(
         height: MediaQuery.of(context).size.height,
         child: Column(
           children: [
-            // Header
-            Container(
-              height: MediaQuery.of(context).size.height * 0.09,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.black,
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '환경설정',
-                      style: TextStyle(
-                          fontSize: MediaQuery.of(context).size.width * 0.09),
-                    ),
-                    IconButton(
-                      onPressed: () => {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const Dashboard(),
-                          ),
-                        ),
-                      },
-                      icon: Icon(
-                        Icons.cancel_outlined,
-                        size: MediaQuery.of(context).size.width * 0.09,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
             Container(
               decoration: BoxDecoration(
                 border: Border.all(

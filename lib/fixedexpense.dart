@@ -308,6 +308,8 @@ class _FixedExpenseState extends State<FixedExpense> {
                                                       FixedExpense(
                                                     whatRecordsIs:
                                                         widget.whatRecordsIs,
+                                                    ratioOfTotalAmount: widget
+                                                        .ratioOfTotalAmount,
                                                   ),
                                                 ),
                                               );
@@ -330,6 +332,8 @@ class _FixedExpenseState extends State<FixedExpense> {
                                   MaterialPageRoute(
                                     builder: (context) => FixedExpense(
                                       whatRecordsIs: widget.whatRecordsIs,
+                                      ratioOfTotalAmount:
+                                          widget.ratioOfTotalAmount,
                                     ),
                                   ),
                                 );
