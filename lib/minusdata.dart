@@ -68,8 +68,8 @@ class _MinusDataState extends State<MinusData> {
       'user_uuid': storedId.toString(),
       'date': selectedDateTime,
       'category': categoryInput,
-      'info': infoInput,
-      'amount': insertAmount,
+      'info': infoInput ?? '',
+      'amount': insertAmount ?? 0,
     }).then((value) {
       print('Insert success $value');
     }).catchError((error) {
@@ -189,9 +189,15 @@ class _MinusDataState extends State<MinusData> {
                 OutlinedButton(
                     onPressed: () async {
                       await insertDailyRecord(datestate.selectedDateTime);
-                      Navigator.push(
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(builder: (context) => const Home()),
+                      // );
+                      Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(builder: (context) => const Home()),
+                        MaterialPageRoute(
+                            builder: (context) => const Home()), // 이동할 화면
+                        (Route<dynamic> route) => false, // 모든 이전 화면을 삭제
                       );
                     },
                     child: const Text('완료'))

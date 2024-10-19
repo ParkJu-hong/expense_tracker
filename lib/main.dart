@@ -38,6 +38,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
   final supabase = Supabase.instance.client;
   final storage = const FlutterSecureStorage();
   final Uuid _uuid = const Uuid();
@@ -106,7 +107,6 @@ class _MyAppState extends State<MyApp> {
               ),
             );
           } else {
-            // snapshot.data.toString()
             return const Home();
           }
         },

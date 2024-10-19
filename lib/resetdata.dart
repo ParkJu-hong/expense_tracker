@@ -41,12 +41,7 @@ class _ResetDataState extends State<ResetData> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const Setting(),
-              ),
-            );
+            Navigator.pop(context);
           },
         ),
         toolbarHeight: MediaQuery.of(context).size.height * 0.08,
@@ -64,11 +59,12 @@ class _ResetDataState extends State<ResetData> {
                 TextButton(
                   onPressed: () async {
                     await deleteDataByUuid(); // 데이터를 삭제하고
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const Setting(),
-                        ));
+                    Navigator.pop(context);
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //       builder: (context) => const Setting(),
+                    //     ));
                   },
                   child: const Text('삭제합니다.'),
                 ),

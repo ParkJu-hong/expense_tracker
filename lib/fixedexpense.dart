@@ -98,7 +98,6 @@ class _FixedExpenseState extends State<FixedExpense> {
         .lt('date', nextMonthStartDate.toIso8601String()) // 다음 월의 첫날 이전
         .or(categoryQuery)
         .then((recordAmounts) {
-      print("recordAmounts : $recordAmounts");
       int totalAmountResult = 0;
       if (recordAmounts.isNotEmpty) {
         for (var recordAmount in recordAmounts) {
@@ -180,13 +179,11 @@ class _FixedExpenseState extends State<FixedExpense> {
           RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
           (Match match) => '${match[1]},',
         );
-
     String sign = (dailyRecord['amount'] != null && dailyRecord['amount'] > 0)
         ? '+'
         : (dailyRecord['amount'] != null && dailyRecord['amount'] < 0)
             ? '-'
             : '';
-
     return GestureDetector(
       onTap: () {
         showDialog(
@@ -301,18 +298,7 @@ class _FixedExpenseState extends State<FixedExpense> {
                                           const Text("삭제 되었습니다."),
                                           TextButton(
                                             onPressed: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      FixedExpense(
-                                                    whatRecordsIs:
-                                                        widget.whatRecordsIs,
-                                                    ratioOfTotalAmount: widget
-                                                        .ratioOfTotalAmount,
-                                                  ),
-                                                ),
-                                              );
+                                              Navigator.pop(context, true);
                                             },
                                             style: TextButton.styleFrom(
                                               textStyle: const TextStyle(
@@ -327,16 +313,14 @@ class _FixedExpenseState extends State<FixedExpense> {
                                   );
                                 },
                               ).then((value) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => FixedExpense(
-                                      whatRecordsIs: widget.whatRecordsIs,
-                                      ratioOfTotalAmount:
-                                          widget.ratioOfTotalAmount,
-                                    ),
-                                  ),
-                                );
+                                Navigator.pop(context, true);
+                                setState(() {
+                                  final dateState = Provider.of<Datestate>(
+                                      context,
+                                      listen: false);
+                                  initializeData(dateState.selectedDateTime,
+                                      widget.whatRecordsIs);
+                                });
                               });
                             } else if (result == 'error') {
                               return showDialog(
@@ -405,7 +389,7 @@ class _FixedExpenseState extends State<FixedExpense> {
                 Text(dailyRecord['date'].toString()),
               ],
             ),
-            Text('- $formattedNumber 원'),
+            Text('$sign $formattedNumber 원'),
           ],
         ),
       ),
@@ -449,111 +433,128 @@ class _FixedExpenseState extends State<FixedExpense> {
   @override
   Widget build(BuildContext context) {
     final datestate = Provider.of<Datestate>(context, listen: true);
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const Dashboard(),
-              ),
-            );
-          },
-        ),
-        toolbarHeight: MediaQuery.of(context).size.height * 0.08,
-      ),
-      body: Stack(
-        children: [
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(recordsTypeTitle),
-                    Text('$selectedYear년 $selectedMonth월'),
-                    totalFixedAmount != null
-                        ? Text('$totalFixedAmount 원')
-                        : const CircularProgressIndicator(),
-                  ],
-                ),
-              ),
-              Container(
-                height: widget.whatRecordsIs == 'totalAmount'
-                    ? MediaQuery.of(context).size.height * 0.3
-                    : MediaQuery.of(context).size.height * 0.7,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.black,
-                  ),
-                ),
-                child: ListView(
-                  children: [
-                    ...toalFixedAmountRecords.map(
-                        (record) => getListFixedExpenseWidget(context, record)),
-                  ],
-                ),
-              ),
-              if (widget.whatRecordsIs == 'totalAmount')
-                getCircleGraphExpenseWidget(context, toalFixedAmountRecords)
-            ],
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) {
+          return Future.value(true); // Pop 처리가 되었음을 나타냄
+        }
+        return Future.value(false); // Pop이 발생하지 않았을 때
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context, true);
+            },
           ),
-          if (widget.whatRecordsIs == 'fixed')
-            Positioned(
-              left: MediaQuery.of(context).size.width * 0.65,
-              top: MediaQuery.of(context).size.height * 0.75,
-              child: Row(
-                children: [
-                  OutlinedButton(
-                    style: ButtonStyle(
-                      backgroundColor:
-                          WidgetStateProperty.all<Color>(Colors.white),
-                    ),
-                    onPressed: () => {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => FixedData(
-                                  selectedDateTime: datestate.selectedDateTime,
-                                  whatRecordIs: 'fixed',
-                                )),
-                      ),
-                    },
-                    child: const Text('고정 지출 추가'),
+          toolbarHeight: MediaQuery.of(context).size.height * 0.08,
+        ),
+        body: Stack(
+          children: [
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(recordsTypeTitle),
+                      Text('$selectedYear년 $selectedMonth월'),
+                      totalFixedAmount != null
+                          ? Text('$totalFixedAmount 원')
+                          : const CircularProgressIndicator(),
+                    ],
                   ),
-                ],
-              ),
-            )
-          else if (widget.whatRecordsIs == 'special')
-            Positioned(
-              left: MediaQuery.of(context).size.width * 0.65,
-              top: MediaQuery.of(context).size.height * 0.75,
-              child: Row(
-                children: [
-                  OutlinedButton(
-                    style: ButtonStyle(
-                      backgroundColor:
-                          WidgetStateProperty.all<Color>(Colors.white),
+                ),
+                Container(
+                  height: widget.whatRecordsIs == 'totalAmount'
+                      ? MediaQuery.of(context).size.height * 0.3
+                      : MediaQuery.of(context).size.height * 0.7,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.black,
                     ),
-                    onPressed: () => {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => FixedData(
-                                  selectedDateTime: datestate.selectedDateTime,
-                                  whatRecordIs: 'special',
-                                )),
-                      ),
-                    },
-                    child: const Text('특별 지출 추가'),
                   ),
-                ],
-              ),
+                  child: ListView(
+                    children: [
+                      ...toalFixedAmountRecords.map((record) =>
+                          getListFixedExpenseWidget(context, record)),
+                    ],
+                  ),
+                ),
+                if (widget.whatRecordsIs == 'totalAmount')
+                  getCircleGraphExpenseWidget(context, toalFixedAmountRecords)
+              ],
             ),
-        ],
+            if (widget.whatRecordsIs == 'fixed')
+              Positioned(
+                left: MediaQuery.of(context).size.width * 0.65,
+                top: MediaQuery.of(context).size.height * 0.75,
+                child: Row(
+                  children: [
+                    OutlinedButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            WidgetStateProperty.all<Color>(Colors.white),
+                      ),
+                      onPressed: () async {
+                        bool isBack = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => FixedData(
+                                    selectedDateTime:
+                                        datestate.selectedDateTime,
+                                    whatRecordIs: 'fixed',
+                                  )),
+                        );
+                        if (isBack) {
+                          final dateState =
+                              Provider.of<Datestate>(context, listen: false);
+                          initializeData(
+                              dateState.selectedDateTime, widget.whatRecordsIs);
+                        }
+                      },
+                      child: const Text('고정 지출 추가'),
+                    ),
+                  ],
+                ),
+              )
+            else if (widget.whatRecordsIs == 'special')
+              Positioned(
+                left: MediaQuery.of(context).size.width * 0.65,
+                top: MediaQuery.of(context).size.height * 0.75,
+                child: Row(
+                  children: [
+                    OutlinedButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            WidgetStateProperty.all<Color>(Colors.white),
+                      ),
+                      onPressed: () async {
+                        bool isBack = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => FixedData(
+                                    selectedDateTime:
+                                        datestate.selectedDateTime,
+                                    whatRecordIs: 'special',
+                                  )),
+                        );
+                        if (isBack) {
+                          final dateState =
+                              Provider.of<Datestate>(context, listen: false);
+                          initializeData(
+                              dateState.selectedDateTime, widget.whatRecordsIs);
+                        }
+                      },
+                      child: const Text('특별 지출 추가'),
+                    ),
+                  ],
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

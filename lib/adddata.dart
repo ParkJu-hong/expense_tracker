@@ -45,6 +45,7 @@ class _AddDataState extends State<AddData> {
   @override
   void initState() {
     categoryInput = _addCategory[0].keys.first;
+    print("categoryInput test : $categoryInput");
     super.initState();
 
     _controller.addListener(() {
@@ -62,13 +63,12 @@ class _AddDataState extends State<AddData> {
     final supabase = Supabase.instance.client;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? storedId = prefs.getString('uuid');
-    print('categoryInput : $categoryInput');
     await supabase.from('daily_record').insert({
       'user_uuid': storedId.toString(),
       'date': selectedDateTime,
       'category': categoryInput,
-      'info': infoInput,
-      'amount': amountInput
+      'info': infoInput ?? '',
+      'amount': amountInput ?? 0
     }).then((value) {
       print('Insert success $value');
     }).catchError((error) {
@@ -159,9 +159,15 @@ class _AddDataState extends State<AddData> {
                 OutlinedButton(
                   onPressed: () async {
                     await insertDailyRecord(datestate.selectedDateTime);
-                    Navigator.push(
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => const Home()),
+                    // );
+                    Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(builder: (context) => const Home()),
+                      MaterialPageRoute(
+                          builder: (context) => const Home()), // 이동할 화면
+                      (Route<dynamic> route) => false, // 모든 이전 화면을 삭제
                     );
                   },
                   child: const Text('완료'),

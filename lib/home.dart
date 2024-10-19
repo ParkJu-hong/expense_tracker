@@ -24,7 +24,6 @@ class _HomeState extends State<Home> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final dateState = Provider.of<Datestate>(context, listen: false);
       initializeData(dateState.selectedDateTime);
-      // createExcelFile(dateState.selectedDateTime);
     });
   }
 
@@ -181,16 +180,15 @@ class _HomeState extends State<Home> {
     List<Map<String, dynamic>> result = [];
 
     await supabase
-        .from('user_data')
+        .from('daily_record')
         .select('''
-    daily_record(id, category, amount, info, date)
+          id, category, amount, info, date
     ''')
-        .eq('daily_record.user_uuid', storedId.toString())
-        .eq('daily_record.date', nowDate)
+        .eq('user_uuid', storedId.toString())
+        .eq('date', nowDate)
         .then((value) {
-          print("value : $value");
           setState(() {
-            dailyRecords = value[0]['daily_record'];
+            dailyRecords = value;
           });
           result = value;
         })
@@ -291,7 +289,6 @@ class _HomeState extends State<Home> {
         : (dailyRecord['amount'] != null && dailyRecord['amount'] < 0)
             ? '-'
             : '';
-
     return GestureDetector(
       onTap: () {
         showDialog(
@@ -406,12 +403,7 @@ class _HomeState extends State<Home> {
                                           const Text("삭제 되었습니다."),
                                           TextButton(
                                             onPressed: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const Home()),
-                                              );
+                                              Navigator.pop(context);
                                             },
                                             style: TextButton.styleFrom(
                                               textStyle: const TextStyle(
@@ -426,11 +418,18 @@ class _HomeState extends State<Home> {
                                   );
                                 },
                               ).then((value) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const Home()),
-                                );
+                                Navigator.pop(context);
+                                setState(() {
+                                  final dateState = Provider.of<Datestate>(
+                                      context,
+                                      listen: false);
+                                  initializeData(dateState.selectedDateTime);
+                                });
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //       builder: (context) => const Home()),
+                                // );
                               });
                             } else if (result == 'error') {
                               return showDialog(
@@ -578,13 +577,18 @@ class _HomeState extends State<Home> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               IconButton(
-                                onPressed: () => {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const Dashboard()),
-                                  )
+                                onPressed: () async {
+                                  bool isBack = await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const Dashboard()),
+                                          ) ==
+                                          null ??
+                                      false;
+                                  if (isBack) {
+                                    initializeData(datestate.selectedDateTime);
+                                  }
                                 },
                                 icon: Icon(
                                   space_dashboard_outlined,
@@ -808,7 +812,7 @@ class _HomeState extends State<Home> {
           ),
           // Add or Minus record button of expense_tracker
           Positioned(
-            left: MediaQuery.of(context).size.width * 0.65,
+            left: MediaQuery.of(context).size.width * 0.6,
             top: MediaQuery.of(context).size.height * 0.79,
             child: Row(
               children: [

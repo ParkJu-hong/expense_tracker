@@ -64,12 +64,7 @@ class _SettingState extends State<Setting> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const Dashboard(),
-              ),
-            );
+            Navigator.pop(context);
           },
         ),
         actions: [
@@ -156,11 +151,10 @@ class _SettingState extends State<Setting> {
                                     seletedStartDate, seletedEndDate);
                                 await sendEmailWithAttachmentExcel(filePath,
                                     seletedStartDate, seletedEndDate, context);
-
-                                // Navigator.push(
-                                //     context,
-                                //     MaterialPageRoute(
-                                //         builder: (context) => const Setting()));
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('엑셀 파일이 메일로 전송되었습니다.')),
+                                );
                               },
                               child: const Text('확인'),
                             ),

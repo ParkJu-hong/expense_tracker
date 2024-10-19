@@ -78,8 +78,8 @@ class _FixedDataState extends State<FixedData> {
       'user_uuid': storedId.toString(),
       'date': selectedDateTime,
       'category': categoryInput,
-      'info': infoInput,
-      'amount': insertAmount,
+      'info': infoInput ?? '',
+      'amount': insertAmount ?? 0,
     }).then((value) {
       print('Insert success $value');
     }).catchError((error) {
@@ -95,18 +95,7 @@ class _FixedDataState extends State<FixedData> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => widget.whatRecordIs == 'fixed'
-                    ? FixedExpense(
-                        whatRecordsIs: 'fixed',
-                      )
-                    : FixedExpense(
-                        whatRecordsIs: 'special',
-                      ),
-              ),
-            );
+            Navigator.pop(context, true);
           },
         ),
         toolbarHeight: MediaQuery.of(context).size.height * 0.08,
@@ -241,17 +230,20 @@ class _FixedDataState extends State<FixedData> {
                 OutlinedButton(
                     onPressed: () async {
                       await insertDailyRecord(datestate.selectedDateTime);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => widget.whatRecordIs == 'fixed'
-                                ? FixedExpense(
-                                    whatRecordsIs: 'fixed',
-                                  )
-                                : FixedExpense(
-                                    whatRecordsIs: 'special',
-                                  ),
-                          ));
+                      Navigator.pop(context, true);
+                      /*
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => widget.whatRecordIs == 'fixed'
+                              ? FixedExpense(
+                                  whatRecordsIs: 'fixed',
+                                )
+                              : FixedExpense(
+                                  whatRecordsIs: 'special',
+                                ),
+                        ),
+                      );
+                      */
                     },
                     child: const Text('완료'))
               ],
