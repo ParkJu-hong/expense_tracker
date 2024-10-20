@@ -53,6 +53,13 @@ dependencies:
   syncfusion_flutter_datepicker: ^27.1.51
   package_info_plus: ^8.0.2
   flutter_native_splash: ^2.4.1
+  flutter_launcher_icons: "^0.14.1"
+
+# flutter_launcher_icons:
+#   android: "launcher_icon"
+#   ios: true
+#   image_path: "assets/expense_logo_icon.png"
+#   min_sdk_android: 21 # android min sdk min:16, default 21
 
 
 dev_dependencies:
