@@ -9,9 +9,12 @@ import 'package:provider/provider.dart';
 import 'package:expense_tracker/datestate.dart';
 import 'package:month_year_picker/month_year_picker.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  // WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   await Supabase.initialize(
     // 나중에 environ 처리 해줄 것
@@ -50,6 +53,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<String> _loadUniqueId() async {
+    // await Future.delayed(const Duration(seconds: 3));
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? storedId = prefs.getString('uuid');
 
@@ -96,9 +100,10 @@ class _MyAppState extends State<MyApp> {
       home: FutureBuilder(
         future: _loadUniqueId(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData == false) {
-            return const CircularProgressIndicator();
-          } else if (snapshot.hasError) {
+          // if (snapshot.hasData == false) {
+          //   return const CircularProgressIndicator();
+          // } else
+          if (snapshot.hasError) {
             return Padding(
               padding: const EdgeInsets.all(150),
               child: Text(
@@ -107,6 +112,7 @@ class _MyAppState extends State<MyApp> {
               ),
             );
           } else {
+            FlutterNativeSplash.remove();
             return const Home();
           }
         },

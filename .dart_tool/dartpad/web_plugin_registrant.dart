@@ -8,6 +8,7 @@
 
 import 'package:app_links_web/app_links_web.dart';
 import 'package:device_info_plus/src/device_info_plus_web.dart';
+import 'package:flutter_native_splash/flutter_native_splash_web.dart';
 import 'package:flutter_secure_storage_web/flutter_secure_storage_web.dart';
 import 'package:package_info_plus/src/package_info_plus_web.dart';
 import 'package:shared_preferences_web/shared_preferences_web.dart';
@@ -19,6 +20,7 @@ void registerPlugins([final Registrar? pluginRegistrar]) {
   final Registrar registrar = pluginRegistrar ?? webPluginRegistrar;
   AppLinksPluginWeb.registerWith(registrar);
   DeviceInfoPlusWebPlugin.registerWith(registrar);
+  FlutterNativeSplashWeb.registerWith(registrar);
   FlutterSecureStorageWeb.registerWith(registrar);
   PackageInfoPlusWebPlugin.registerWith(registrar);
   SharedPreferencesPlugin.registerWith(registrar);

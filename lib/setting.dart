@@ -59,180 +59,193 @@ class _SettingState extends State<Setting> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        actions: [
-          Text(
-            '환경설정',
-            style:
-                TextStyle(fontSize: MediaQuery.of(context).size.width * 0.09),
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) {
+          return Future.value(true); // Pop 처리가 되었음을 나타냄
+        }
+        return Future.value(false); // Pop이 발생하지 않았을 때
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
-        ],
-        toolbarHeight: MediaQuery.of(context).size.height * 0.08,
-      ),
-      body: SizedBox(
-        height: MediaQuery.of(context).size.height,
-        child: Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.black,
+          actions: [
+            Text(
+              '환경설정',
+              style:
+                  TextStyle(fontSize: MediaQuery.of(context).size.width * 0.09),
+            ),
+          ],
+          toolbarHeight: MediaQuery.of(context).size.height * 0.08,
+        ),
+        body: SizedBox(
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.black,
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '전체 데이터 초기화',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: MediaQuery.of(context).size.width * 0.06,
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          IconButton(
+                            onPressed: () => {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const ResetData(),
+                                ),
+                              ),
+                            },
+                            icon: Icon(
+                              Icons.arrow_right,
+                              size: MediaQuery.of(context).size.width * 0.12,
+                              weight: MediaQuery.of(context).size.width * 0.08,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '전체 데이터 초기화',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: MediaQuery.of(context).size.width * 0.06,
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        IconButton(
-                          onPressed: () => {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const ResetData(),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.black,
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () => showDialog<String>(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            title: SizedBox(
+                              height: 300,
+                              width: 300,
+                              child: SfDateRangePicker(
+                                onSelectionChanged: _onSelectionChanged,
+                                selectionMode:
+                                    DateRangePickerSelectionMode.range,
                               ),
                             ),
-                          },
-                          icon: Icon(
-                            Icons.arrow_right,
-                            size: MediaQuery.of(context).size.width * 0.12,
-                            weight: MediaQuery.of(context).size.width * 0.08,
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () async {
+                                  String filePath = await createExcelFile(
+                                      seletedStartDate, seletedEndDate);
+                                  await sendEmailWithAttachmentExcel(
+                                      filePath,
+                                      seletedStartDate,
+                                      seletedEndDate,
+                                      context);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text('엑셀 파일이 메일로 전송되었습니다.')),
+                                  );
+                                },
+                                child: const Text('확인'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('취소'),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.black,
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () => showDialog<String>(
-                        context: context,
-                        builder: (BuildContext context) => AlertDialog(
-                          title: SizedBox(
-                            height: 300,
-                            width: 300,
-                            child: SfDateRangePicker(
-                              onSelectionChanged: _onSelectionChanged,
-                              selectionMode: DateRangePickerSelectionMode.range,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              "Export excel with Email",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.06,
+                              ),
                             ),
-                          ),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () async {
-                                String filePath = await createExcelFile(
-                                    seletedStartDate, seletedEndDate);
-                                await sendEmailWithAttachmentExcel(filePath,
-                                    seletedStartDate, seletedEndDate, context);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text('엑셀 파일이 메일로 전송되었습니다.')),
-                                );
-                              },
-                              child: const Text('확인'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Text('취소'),
-                            ),
+                            Icon(
+                              Icons.arrow_right,
+                              size: MediaQuery.of(context).size.width * 0.12,
+                              weight: MediaQuery.of(context).size.width * 0.08,
+                            )
                           ],
                         ),
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            "Export excel with Email",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize:
-                                  MediaQuery.of(context).size.width * 0.06,
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.black,
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () async {
+                          await sendEmailFeedback(context);
+                          // Optionally, you can show a confirmation message after sending feedback.
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('피드백이 전송되었습니다. 감사합니다!')),
+                          );
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              "피드백",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.06,
+                              ),
                             ),
-                          ),
-                          Icon(
-                            Icons.arrow_right,
-                            size: MediaQuery.of(context).size.width * 0.12,
-                            weight: MediaQuery.of(context).size.width * 0.08,
-                          )
-                        ],
+                            Icon(
+                              Icons.arrow_right,
+                              size: MediaQuery.of(context).size.width * 0.12,
+                              weight: MediaQuery.of(context).size.width * 0.08,
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.black,
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () async {
-                        await sendEmailFeedback(context);
-                        // Optionally, you can show a confirmation message after sending feedback.
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('피드백이 전송되었습니다. 감사합니다!')),
-                        );
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            "피드백",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize:
-                                  MediaQuery.of(context).size.width * 0.06,
-                            ),
-                          ),
-                          Icon(
-                            Icons.arrow_right,
-                            size: MediaQuery.of(context).size.width * 0.12,
-                            weight: MediaQuery.of(context).size.width * 0.08,
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

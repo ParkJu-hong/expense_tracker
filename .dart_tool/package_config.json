@@ -2,6 +2,12 @@
   "configVersion": 2,
   "packages": [
     {
+      "name": "ansicolor",
+      "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/ansicolor-2.0.3",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "app_links",
       "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/app_links-6.3.2",
       "packageUri": "lib/",
@@ -30,6 +36,12 @@
       "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/archive-3.6.1",
       "packageUri": "lib/",
       "languageVersion": "3.0"
+    },
+    {
+      "name": "args",
+      "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/args-2.6.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
     },
     {
       "name": "async",
@@ -66,6 +78,12 @@
       "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/crypto-3.0.5",
       "packageUri": "lib/",
       "languageVersion": "3.4"
+    },
+    {
+      "name": "csslib",
+      "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/csslib-1.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
     },
     {
       "name": "cupertino_icons",
@@ -134,6 +152,12 @@
       "languageVersion": "3.2"
     },
     {
+      "name": "flutter_native_splash",
+      "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/flutter_native_splash-2.4.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "flutter_secure_storage",
       "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/flutter_secure_storage-9.2.2",
       "packageUri": "lib/",
@@ -198,6 +222,12 @@
       "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/gtk-2.1.0",
       "packageUri": "lib/",
       "languageVersion": "3.0"
+    },
+    {
+      "name": "html",
+      "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/html-0.15.4",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
     },
     {
       "name": "http",
@@ -578,6 +608,12 @@
       "languageVersion": "2.17"
     },
     {
+      "name": "universal_io",
+      "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/universal_io-2.2.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
       "name": "url_launcher",
       "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/url_launcher-6.3.0",
       "packageUri": "lib/",
@@ -686,6 +722,12 @@
       "languageVersion": "3.2"
     },
     {
+      "name": "yaml",
+      "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/yaml-3.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
+    },
+    {
       "name": "yet_another_json_isolate",
       "rootUri": "file:///Users/bagjuhong/.pub-cache/hosted/pub.dev/yet_another_json_isolate-2.0.2",
       "packageUri": "lib/",
@@ -698,7 +740,7 @@
       "languageVersion": "3.5"
     }
   ],
-  "generated": "2024-10-06T17:36:42.001689Z",
+  "generated": "2024-10-20T12:18:09.874825Z",
   "generator": "pub",
   "generatorVersion": "3.5.3",
   "flutterRoot": "file:///usr/local/Caskroom/flutter/3.24.3/flutter",

@@ -1,0 +1,11 @@
+flutter_native_splash:
+  android: true
+  ios: true
+  web: true
+  color: "#dcd7cb"
+  image: "assets/expense_logo.png"
+  android_12:
+    color: "#dcd7cb"
+    image: "assets/expense_logo.png"
+    branding: "assets/expense_logo.png"
+  fullscreen: true

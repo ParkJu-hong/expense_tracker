@@ -254,13 +254,20 @@ class _DashboardState extends State<Dashboard> {
           centerTitle: true, // 타이틀을 가운데에 정렬
           actions: [
             IconButton(
-              onPressed: () => {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const Setting(),
-                  ),
-                ),
+              onPressed: () async {
+                bool isBack = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const Setting(),
+                          ),
+                        ) ==
+                        null ??
+                    false;
+                if (isBack) {
+                  final dateState =
+                      Provider.of<Datestate>(context, listen: false);
+                  initializeData(dateState.selectedDateTime);
+                }
               },
               icon: Icon(
                 Icons.settings,
@@ -310,15 +317,25 @@ class _DashboardState extends State<Dashboard> {
                                     ),
                                   ),
                                   IconButton(
-                                    onPressed: () => {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => FixedExpense(
-                                            whatRecordsIs: 'income',
-                                          ),
-                                        ),
-                                      ),
+                                    onPressed: () async {
+                                      bool isBack = await Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      FixedExpense(
+                                                    whatRecordsIs: 'income',
+                                                  ),
+                                                ),
+                                              ) ==
+                                              null ??
+                                          false;
+                                      if (isBack) {
+                                        final dateState =
+                                            Provider.of<Datestate>(context,
+                                                listen: false);
+                                        initializeData(
+                                            dateState.selectedDateTime);
+                                      }
                                     },
                                     icon: Icon(
                                       Icons.arrow_right,
@@ -370,15 +387,25 @@ class _DashboardState extends State<Dashboard> {
                                     ),
                                   ),
                                   IconButton(
-                                    onPressed: () => {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => FixedExpense(
-                                            whatRecordsIs: 'living',
-                                          ),
-                                        ),
-                                      ),
+                                    onPressed: () async {
+                                      bool isBack = await Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      FixedExpense(
+                                                    whatRecordsIs: 'living',
+                                                  ),
+                                                ),
+                                              ) ==
+                                              null ??
+                                          false;
+                                      if (isBack) {
+                                        final dateState =
+                                            Provider.of<Datestate>(context,
+                                                listen: false);
+                                        initializeData(
+                                            dateState.selectedDateTime);
+                                      }
                                     },
                                     icon: Icon(
                                       Icons.arrow_right,
@@ -572,8 +599,8 @@ class _DashboardState extends State<Dashboard> {
                                     ),
                                   ),
                                   IconButton(
-                                    onPressed: () => {
-                                      Navigator.push(
+                                    onPressed: () async {
+                                      bool isBack = await Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => FixedExpense(
@@ -582,7 +609,14 @@ class _DashboardState extends State<Dashboard> {
                                                 ratioOfTotalAmount,
                                           ),
                                         ),
-                                      ),
+                                      );
+                                      if (isBack) {
+                                        final dateState =
+                                            Provider.of<Datestate>(context,
+                                                listen: false);
+                                        initializeData(
+                                            dateState.selectedDateTime);
+                                      }
                                     },
                                     icon: Icon(
                                       Icons.arrow_right,

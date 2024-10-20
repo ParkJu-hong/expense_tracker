@@ -48,6 +48,10 @@ class _HomeState extends State<Home> {
   String totalAmount = '';
   final List<Map<String, IconData>> _addCategory = AddCategory().addIcons;
   final List<Map<String, IconData>> _minusCategory = MinusCategory().MinusIcons;
+  final List<Map<String, IconData>> _fixedCategory = FixedCategory().fixedIcons;
+  final List<Map<String, IconData>> _specialCategory = [
+    SpecialCategory().specialIcon
+  ];
   PageController _pageViewController = PageController(
     initialPage: 0,
   );
@@ -242,6 +246,18 @@ class _HomeState extends State<Home> {
       for (int i = 0; i < _minusCategory.length; i++) {
         if (recordCategory == _minusCategory[i].keys.first) {
           result = _minusCategory[i].values.first;
+          break;
+        }
+      }
+      for (int i = 0; i < _fixedCategory.length; i++) {
+        if (recordCategory == _fixedCategory[i].keys.first) {
+          result = _fixedCategory[i].values.first;
+          break;
+        }
+      }
+      for (int i = 0; i < _specialCategory.length; i++) {
+        if (recordCategory == _specialCategory[i].keys.first) {
+          result = _specialCategory[i].values.first;
           break;
         }
       }
@@ -653,7 +669,7 @@ class _HomeState extends State<Home> {
                           ],
                         ),
                         SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.1,
+                          height: MediaQuery.of(context).size.height * 0.08,
                           child: PageView.builder(
                             controller:
                                 _pageViewController, //_pageViewController,
@@ -702,7 +718,7 @@ class _HomeState extends State<Home> {
                                             fontSize: MediaQuery.of(context)
                                                     .size
                                                     .width *
-                                                0.070,
+                                                0.050,
                                           ),
                                         ),
                                       ),
