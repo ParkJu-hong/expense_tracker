@@ -28,6 +28,8 @@ class _MinusDataState extends State<MinusData> {
   String? infoInput;
   int? amountInput;
 
+  String previousText = '';
+
   String formatNumber(String s) {
     if (s.isEmpty) return '';
     final number = int.parse(s);
@@ -47,13 +49,20 @@ class _MinusDataState extends State<MinusData> {
     super.initState();
 
     _controller.addListener(() {
-      final text = _controller.text;
-      _controller.value = _controller.value.copyWith(
-        text: formatNumber(text.replaceAll(',', '')),
-        selection: TextSelection.collapsed(
-          offset: formatNumber(text.replaceAll(',', '')).length,
-        ),
-      );
+      final text = _controller.text.replaceAll(',', '');
+
+      if (text != previousText) {
+        final formattedText = formatNumber(text);
+
+        _controller.value = _controller.value.copyWith(
+          text: formattedText,
+          selection: TextSelection.collapsed(
+            offset: formattedText.length,
+          ),
+        );
+
+        previousText = formattedText;
+      }
     });
   }
 
@@ -114,7 +123,7 @@ class _MinusDataState extends State<MinusData> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    for (int i = 0; i <= 3; i++)
+                    for (int i = 0; i <= 2; i++)
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           foregroundColor: selectedIconIndex == i
@@ -130,8 +139,12 @@ class _MinusDataState extends State<MinusData> {
                         },
                         child: Column(
                           children: [
-                            Icon(minusCategory[i].values.first),
-                            Text(minusCategory[i].keys.first),
+                            Icon(
+                              minusCategory[i].values.first,
+                            ),
+                            Text(
+                              minusCategory[i].keys.first,
+                            ),
                           ],
                         ),
                       ),
@@ -143,7 +156,7 @@ class _MinusDataState extends State<MinusData> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    for (int i = 4; i <= 6; i++)
+                    for (int i = 3; i <= 5; i++)
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           foregroundColor: selectedIconIndex == i
@@ -159,8 +172,12 @@ class _MinusDataState extends State<MinusData> {
                         },
                         child: Column(
                           children: [
-                            Icon(minusCategory[i].values.first),
-                            Text(minusCategory[i].keys.first),
+                            Icon(
+                              minusCategory[i].values.first,
+                            ),
+                            Text(
+                              minusCategory[i].keys.first,
+                            )
                           ],
                         ),
                       ),

@@ -28,6 +28,8 @@ class _AddDataState extends State<AddData> {
   String? infoInput;
   int? amountInput;
 
+  String previousText = '';
+
   // functions starts
   String formatNumber(String s) {
     if (s.isEmpty) return '';
@@ -49,13 +51,20 @@ class _AddDataState extends State<AddData> {
     super.initState();
 
     _controller.addListener(() {
-      final text = _controller.text;
-      _controller.value = _controller.value.copyWith(
-        text: formatNumber(text.replaceAll(',', '')),
-        selection: TextSelection.collapsed(
-          offset: formatNumber(text.replaceAll(',', '')).length,
-        ),
-      );
+      final text = _controller.text.replaceAll(',', '');
+
+      if (text != previousText) {
+        final formattedText = formatNumber(text);
+
+        _controller.value = _controller.value.copyWith(
+          text: formattedText,
+          selection: TextSelection.collapsed(
+            offset: formattedText.length,
+          ),
+        );
+
+        previousText = formattedText;
+      }
     });
   }
 
@@ -129,8 +138,12 @@ class _AddDataState extends State<AddData> {
                         },
                         child: Column(
                           children: [
-                            Icon(_addCategory[i].values.first),
-                            Text(_addCategory[i].keys.first),
+                            Icon(
+                              _addCategory[i].values.first,
+                            ),
+                            Text(
+                              _addCategory[i].keys.first,
+                            ),
                           ],
                         ),
                       ),
